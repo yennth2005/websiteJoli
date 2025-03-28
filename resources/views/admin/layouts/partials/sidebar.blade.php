@@ -2,7 +2,7 @@
     <div id="sidebarEffect"></div>
     <div>
         <div class="logo-wrapper logo-wrapper-center">
-            <a href="index.html" data-bs-original-title="" title="">
+            <a href="{{ Route('admin.dashboard') }}" data-bs-original-title="" title="">
                 <img class="img-fluid for-white" src="{{ asset('assets/admin/images/logo/full-white.png') }}"
                     alt="logo">
             </a>
@@ -31,7 +31,7 @@
                     <li class="back-btn"></li>
 
                     <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="index.html">
+                        <a class="sidebar-link sidebar-title link-nav" href="{{ Route('admin.dashboard') }}">
                             <i class="ri-home-line"></i>
                             <span>Dashboard</span>
                         </a>
@@ -92,10 +92,7 @@
                         </a>
                         <ul class="sidebar-submenu">
                             <li>
-                                <a href="all-users.html">All users</a>
-                            </li>
-                            <li>
-                                <a href="add-new-user.html">Add new user</a>
+                                <a href="{{ Route('admin.user.index') }}">All users</a>
                             </li>
                         </ul>
                     </li>
