@@ -26,7 +26,8 @@
                         <td>{{ $user->role == 'admin' ? 'Admin' : 'Customer' }}</td>
                         <td>{{ $user->status == 'active' ? 'Hoạt động' : 'Bị khóa' }}</td>
                         <td>
-                            <form action="{{ route('users.toggle-lock', $user) }}" method="POST" style="display:inline;">
+                            <form action="{{ route('admin.users.toggle-lock', $user) }}" method="POST"
+                                style="display:inline;">
                                 @csrf
                                 <button type="submit"
                                     class="btn btn-sm {{ $user->status == 'active' ? 'btn-danger' : 'btn-success' }}"
@@ -35,7 +36,7 @@
                                 </button>
                             </form>
                             @if ($user->role == 'customer')
-                                <form action="{{ route('users.make-admin', $user) }}" method="POST"
+                                <form action="{{ route('admin.users.make-admin', $user) }}" method="POST"
                                     style="display:inline;">
                                     @csrf
                                     <button type="submit" class="btn btn-sm btn-primary"
@@ -44,7 +45,7 @@
                                     </button>
                                 </form>
                             @elseif ($user->role == 'admin')
-                                <form action="{{ route('admin.user.remove-admin', $user->id) }}" method="POST"
+                                <form action="{{ route('admin.users.remove-admin', $user->id) }}" method="POST"
                                     style="display:inline;">
                                     @csrf
                                     <button type="submit" class="btn btn-sm btn-warning"
