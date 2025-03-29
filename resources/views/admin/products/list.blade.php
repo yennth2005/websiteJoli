@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Quản lý màu sắc</h1>
-    <a href="{{ route('admin.colors.create') }}" class="btn btn-primary mb-3">Thêm màu</a>
+    <h1 class="mb-4">Quản lý sản phẩm</h1>
+    <a href="{{ route('admin.products.create') }}" class="btn btn-primary mb-3">Thêm mới</a>
 
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
