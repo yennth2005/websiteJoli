@@ -33,71 +33,74 @@
                     <li class="sidebar-list">
                         <a class="sidebar-link sidebar-title link-nav" href="{{ Route('admin.dashboard') }}">
                             <i class="ri-home-line"></i>
-                            <span>Dashboard</span>
+                            <span>Trang quản trị</span>
                         </a>
                     </li>
 
                     <li class="sidebar-list">
-                        <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
+                        <a class="linear-icon-link sidebar-link sidebar-title" href="#">
                             <i class="ri-store-3-line"></i>
-                            <span>Product</span>
+                            <span>Sản phẩm</span>
                         </a>
                         <ul class="sidebar-submenu">
                             <li>
-                                <a href="products.html">Prodcts</a>
+                                <a href="{{route('admin.products.index')}}">Danh sách sản phẩm</a>
                             </li>
 
                             <li>
-                                <a href="add-new-product.html">Add New Products</a>
+                                <a href="add-new-product.html">Thêm sản phẩm</a>
+                            </li>
+                            <li>
+                                <a href="add-new-product.html">Chỉnh sửa sản phẩm</a>
                             </li>
                         </ul>
                     </li>
-
+                    {{-- danh mục --}}
                     <li class="sidebar-list">
-                        <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
+                        <a class="linear-icon-link sidebar-link sidebar-title" href="#">
                             <i class="ri-list-check-2"></i>
-                            <span>Category</span>
+                            <span>Danh mục</span>
                         </a>
                         <ul class="sidebar-submenu">
                             <li>
-                                <a href="category.html">Category List</a>
+                                <a href="{{route('admin.categories.index')}}">Danh sách danh mục</a>
                             </li>
 
                             <li>
-                                <a href="add-new-category.html">Add New Category</a>
+                                <a href="{{route('admin.categories.create')}}">Thêm mới</a>
                             </li>
                         </ul>
                     </li>
-
+                    {{-- thuộc tính --}}
                     <li class="sidebar-list">
-                        <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
+                        <a class="linear-icon-link sidebar-link sidebar-title" href="#">
                             <i class="ri-list-settings-line"></i>
-                            <span>Attributes</span>
+                            <span>Thuộc tính</span>
                         </a>
                         <ul class="sidebar-submenu">
                             <li>
-                                <a href="attributes.html">Attributes</a>
+                                <a href="{{route('admin.colors.index')}}">Danh sách</a>
                             </li>
 
                             <li>
-                                <a href="add-new-attributes.html">Add Attributes</a>
+                                <a href="{{route('admin.colors.create')}}">Thêm mới</a>
                             </li>
                         </ul>
                     </li>
-
+                    {{-- người dùng --}}
                     <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+                        <a class="sidebar-link sidebar-title" href="#">
                             <i class="ri-user-3-line"></i>
-                            <span>Users</span>
+                            <span>Người dùng</span>
                         </a>
                         <ul class="sidebar-submenu">
                             <li>
-                                <a href="{{ Route('admin.user.index') }}">All users</a>
+                                <a href="{{ Route('admin.user.index') }}">Tất cả người dùng</a>
                             </li>
                         </ul>
                     </li>
 
-                    <li class="sidebar-list">
+                    {{-- <li class="sidebar-list">
                         <a class="sidebar-link sidebar-title" href="javascript:void(0)">
                             <i class="ri-user-3-line"></i>
                             <span>Roles</span>
@@ -117,12 +120,12 @@
                             <i class="ri-price-tag-3-line"></i>
                             <span>Media</span>
                         </a>
-                    </li>
-
+                    </li> --}}
+                    {{-- đơn hàng --}}
                     <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title" href="javascript:void(0)">
+                        <a class="sidebar-link sidebar-title" href="/admin/orders">
                             <i class="ri-archive-line"></i>
-                            <span>Orders</span>
+                            <span>Đơn hàng</span>
                         </a>
                         <ul class="sidebar-submenu">
                             <li>
@@ -137,85 +140,7 @@
                         </ul>
                     </li>
 
-                    <li class="sidebar-list">
-                        <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
-                            <i class="ri-focus-3-line"></i>
-                            <span>Localization</span>
-                        </a>
-                        <ul class="sidebar-submenu">
-                            <li>
-                                <a href="translation.html">Translation</a>
-                            </li>
-
-                            <li>
-                                <a href="currency-rates.html">Currency Rates</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
-                            <i class="ri-price-tag-3-line"></i>
-                            <span>Coupons</span>
-                        </a>
-                        <ul class="sidebar-submenu">
-                            <li>
-                                <a href="coupon-list.html">Coupon List</a>
-                            </li>
-
-                            <li>
-                                <a href="create-coupon.html">Create Coupon</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="taxes.html">
-                            <i class="ri-price-tag-3-line"></i>
-                            <span>Tax</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="product-review.html">
-                            <i class="ri-star-line"></i>
-                            <span>Product Review</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="support-ticket.html">
-                            <i class="ri-phone-line"></i>
-                            <span>Support Ticket</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="linear-icon-link sidebar-link sidebar-title" href="javascript:void(0)">
-                            <i class="ri-settings-line"></i>
-                            <span>Settings</span>
-                        </a>
-                        <ul class="sidebar-submenu">
-                            <li>
-                                <a href="profile-setting.html">Profile Setting</a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="reports.html">
-                            <i class="ri-file-chart-line"></i>
-                            <span>Reports</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-list">
-                        <a class="sidebar-link sidebar-title link-nav" href="list-page.html">
-                            <i class="ri-list-check"></i>
-                            <span>List Page</span>
-                        </a>
-                    </li>
-                </ul>
+                                        </ul>
             </div>
 
             <div class="right-arrow" id="right-arrow">
