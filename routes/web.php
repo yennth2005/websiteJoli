@@ -4,21 +4,45 @@ use App\Http\Controllers\admin\ColorController;
 use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\CategoryController;
+use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\Client\CheckoutController;
+use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Client\ProductClientController;
+use App\Http\Controllers\Client\ViewOrderDetailController;
+use App\Http\Controllers\Client\ViewOrdersController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// Trang chủ
-Route::get('/', function () {
-    return view('client.home');
+// Trang chủ những trang ko cần đăng nhập
+Route::group([], function () {
+    // Trang chủ
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+
+    // Chi tiết sản phẩm
+    Route::get('/product/{id}', [ProductClientController::class, 'show'])->name('product.show');
+
+    // Giỏ hàng
+    Route::get('/cart', [CartController::class, 'index'])->name('cart');
 });
+
 
 // Dashboard chỉ cho người dùng đã đăng nhập
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
 // Nhóm route yêu cầu đăng nhập
 Route::middleware('auth')->group(function () {
+    //Trang đặt hàng
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    //Trang danh sách đơn hàng
+    Route::get('/orders', [ViewOrdersController::class, 'index'])
+        ->name('view-orders');
+    //trang chi tiết đơn hàng
+    Route::get('/order/{id}', [ViewOrderDetailController::class, 'show'])->name('view-order-detail');
+
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -40,7 +64,7 @@ Route::middleware(['auth', 'admin_check'])->group(function () {
             Route::get('add-category', [CategoryController::class, 'create'])->name('create');
             Route::post('add-category', [CategoryController::class, 'store'])->name('store');
             Route::get('delete-category/{id}', [CategoryController::class, 'edit'])->name('edit');
-            Route::get('edit-category/{id}', [CategoryController::class, 'update'])->name('update');
+            Route::put('edit-category/{id}', [CategoryController::class, 'update'])->name('update');
             Route::delete('delete-category/{id}', [CategoryController::class, 'destroy'])->name('delete');
         });
 
@@ -50,7 +74,7 @@ Route::middleware(['auth', 'admin_check'])->group(function () {
             Route::get('add-color', [ColorController::class, 'create'])->name('create');
             Route::post('add-color', [ColorController::class, 'store'])->name('store');
             Route::get('delete-color/{id}', [ColorController::class, 'edit'])->name('edit');
-            Route::get('edit-color/{id}', [ColorController::class, 'update'])->name('update');
+            Route::put('edit-color/{id}', [ColorController::class, 'update'])->name('update');
             Route::delete('delete-color/{id}', [ColorController::class, 'destroy'])->name('destroy');
         });
 
@@ -60,7 +84,7 @@ Route::middleware(['auth', 'admin_check'])->group(function () {
             Route::get('add-product', [ProductController::class, 'create'])->name('create');
             Route::post('add-product', [ProductController::class, 'store'])->name('store');
             Route::get('delete-product/{id}', [ProductController::class, 'edit'])->name('edit');
-            Route::get('edit-product/{id}', [ProductController::class, 'update'])->name('update');
+            Route::put('edit-product/{id}', [ProductController::class, 'update'])->name('update');
             Route::delete('delete-product/{id}', [ProductController::class, 'destroy'])->name('destroy');
         });
     });

@@ -18,9 +18,10 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->enum('status', ['active', 'deleted'])->default('active');
             $table->timestamps();
+            $table->string('image')->nullable();
             $table->foreign('category_id')
-                  ->references('id')->on('categories')
-                  ->onDelete('cascade');
+                ->references('id')->on('categories')
+                ->onDelete('cascade');
         });
     }
 

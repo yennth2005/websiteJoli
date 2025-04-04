@@ -2,20 +2,6 @@
 
 @section('content')
     <div class="xc-page-wrapper">
-        <div class="xc-scrollbar_progress"></div>
-        @include('client.layouts.partials.header')
-        <div class="xc-body-overlay xc-close-toggler"></div>
-        <div class="xc-search-popup">
-            <div class="xc-search-popup__wrap">
-                <a href="#" class="xc-search-popup__close xc-close-toggler"></a>
-                <div class="xc-search-popup__form">
-                    <form role="search" method="get" action="#">
-                        <input type="search" placeholder="Search Here..." value="" name="s">
-                        <button type="submit"><i class="icon-search"></i></button>
-                    </form>
-                </div>
-            </div>
-        </div>
         <div class="xc-mobile-nav__wrapper">
             <div class="xc-mobile-nav__overlay xc-close-toggler"></div>
             <!-- /.mobile-nav__overlay -->
@@ -142,8 +128,7 @@
                         <div class="row align-items-center">
                             <div class="col-lg-6">
                                 <div class="xc-slider-three__img">
-                                    <img src="{{ asset('assets/client/img/slider/slider-lg-3-4.png') }}"
-                                        alt="slider image">
+                                    <img src="{{ asset('assets/client/img/slider/slider-lg-3-4.png') }}" alt="slider image">
                                 </div>
                             </div>
                             <div class="col-lg-6">
