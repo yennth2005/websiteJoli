@@ -59,6 +59,8 @@
         </div>
     </div>
 
+    @include('client.layouts.partials.header')
+
     <!-- /.preloader -->
     @yield('content')
     @include('client.layouts.partials.footer')

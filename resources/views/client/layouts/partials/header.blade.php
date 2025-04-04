@@ -1,46 +1,72 @@
 <header>
-    <div class="xc-header-two__top xc-header-three__top d-none d-lg-block">
+    <div class="xc-header-one bg-black" id="xc-header-sticky">
         <div class="container">
-            <div class="xc-header-two__top-wrapper d-flex justify-content-between">
-                <div class="xc-header-two__top-left">
-                    <p>Welcome to online eCommerce store.</p>
+            <div class="xc-header-one__wrapper">
+                <div class="xc-header-one__logo">
+                    <a href="/"><img src="{{ asset('assets/client/img/logo/black-logo.png') }}" alt="logo"
+                            width="158"></a>
                 </div>
-                <div class="xc-header-two__bottom-right">
-                    <div class="xc-header-two__cta">
-                        <a href="#"><i class="icon-support"></i>Customer Support</a>
-                        <a href="#"><i class="icon-info"></i>Need Help</a>
+                <div class="xc-header-one__right">
+                    <div class="xc-header-one__search d-none d-xl-block">
+                        <form action="#">
+                            <input type="search" placeholder="Search">
+                            <select>
+                                <option value="1" selected disabled>All category</option>
+                                <option value="2">Health & Beauty</option>
+                                <option value="3">Digital & Electronics</option>
+                                <option value="4">Tools, equipments</option>
+                            </select>
+                            <button type="submit">Search</button>
+                        </form>
                     </div>
+                    <div class="xc-header-one__btns d-none d-lg-flex">
+                        <a href="/dashboard" class="xc-header-one__btn">
+                            <i class="icon-user"></i>Profile
+                        </a>
+                        <a href="#" class="xc-header-one__btn">
+                            <i class="icon-comment"></i>Message
+                        </a>
+                        <a href="#" class="xc-header-one__btn">
+                            <i class="icon-heart"></i>Wishlist
+                        </a>
+                        <a href="cart.html" class="xc-header-one__btn">
+                            <i class="icon-grocery-store"></i>My cart
+                        </a>
+                        <!-- mobile drawer  -->
+                        <div class="xc-header-one__hamburger d-xl-none">
+                            <button type="button" class="xc-offcanvas-btn xc-header-one__btn">
+                                <i class="icon-menu"></i>Nav Bar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- mobile drawer  -->
+                <div class="xc-header-one__hamburger d-lg-none">
+                    <button type="button" class="xc-offcanvas-btn xc-header-one__btn">
+                        <i class="icon-menu"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="xc-header-two xc-header-three" id="xc-header-sticky">
         <div class="container">
             <div class="xc-header-two__wrapper">
-                <div class="xc-header-two__logo">
-                    <a href="index.html"><img src="{{ asset('assets/client/img/logo/black-logo.png') }}" alt="logo"
-                            width="158"></a>
-                </div>
                 <div class="xc-header-two__right">
                     <div class="xc-header-one__menu xc-main-menu">
                         <nav id="mobile-menu">
                             <ul class="ul-0">
                                 <li class="has-dropdown">
-                                    <a href="index.html">Home</a>
-                                    <ul class="submenu">
-                                        <li><a href="index.html">Home One</a></li>
-                                        <li><a href="index-2.html">Home Two</a></li>
-                                        <li><a href="index-3.html">Home Three</a></li>
-
-                                    </ul>
+                                    <a href="/">Home</a>
                                 </li>
                                 <li><a href="about.html">About</a></li>
                                 <li class="has-dropdown"><a href="shop.html">Shop</a>
                                     <ul class="submenu">
                                         <li><a href="shop.html">Shop</a>
                                         <li><a href="product-details.html">Product Details</a></li>
-                                        <li><a href="cart.html">Cart</a></li>
-                                        <li><a href="checkout.html">Checkout</a></li>
+                                        <li><a href="/cart">Cart</a></li>
+                                        <li><a href="/checkout">Checkout</a></li>
                                     </ul>
                                 </li>
                                 <li class="has-dropdown"><a href="#">Page</a>
@@ -75,6 +101,16 @@
                             </ul>
                         </nav>
                     </div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
                     <div class="xc-header-two__btns d-none d-lg-flex">
                         <a href="#" class="xc-header-two__btn">
                             <i class="icon-shopping-cart"></i>
