@@ -83,16 +83,23 @@
                         <a href="#" class="xc-header-two__btn">
                             <i class="icon-love"></i>
                         </a>
-                        <a href="#" class="xc-header-two__btn">
-                            <i class="icon-user-1"></i>
-                        </a>
-                        <!-- mobile drawer  -->
+                        <div class="user-menu">
+                            <a href="/login" class="xc-header-two__btn">
+                                <i class="icon-user-1"></i>
+                            </a>
+                            <div class="user-dropdown">
+                                <a href="/login" class="dropdown-item">Đăng nhập</a>
+                                <a href="/register" class="dropdown-item">Đăng ký</a>
+                            </div>
+                        </div>
+                        <!-- mobile drawer -->
                         <div class="xc-header-two__hamburger d-xl-none">
                             <button type="button" class="xc-offcanvas-btn xc-header-two__btn">
                                 <i class="icon-menu"></i>Nav Bar
                             </button>
                         </div>
                     </div>
+
                 </div>
                 <!-- mobile drawer  -->
                 <div class="xc-header-two__hamburger d-lg-none">
@@ -104,3 +111,37 @@
         </div>
     </div>
 </header>
+
+<style>
+    .user-menu {
+        position: relative;
+    }
+
+    .user-dropdown {
+        display: none;
+        position: absolute;
+        top: 30px;
+        /* Điều chỉnh khoảng cách */
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+        padding: 10px;
+        z-index: 10;
+    }
+
+    .user-menu:hover .user-dropdown {
+        display: block;
+    }
+
+    .dropdown-item {
+        display: block;
+        padding: 10px;
+        color: #333;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f1f1f1;
+    }
+</style>
