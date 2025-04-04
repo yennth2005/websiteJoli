@@ -84,7 +84,7 @@
                             <i class="icon-love"></i>
                         </a>
                         <div class="user-menu">
-                            <a href="/login" class="xc-header-two__btn">
+                            <a href="/dashboard" class="xc-header-two__btn">
                                 <i class="icon-user-1"></i>
                             </a>
                             <div class="user-dropdown">
