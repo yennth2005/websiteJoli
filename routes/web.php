@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\admin\ColorController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\CategoryController;
@@ -37,8 +38,8 @@ Route::middleware('auth')->group(function () {
     //Trang đặt hàng
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     //Trang danh sách đơn hàng
-    Route::get('/orders', [ViewOrdersController::class, 'index'])
-        ->name('view-orders');
+    // Route::get('/orders', [ViewOrdersController::class, 'index'])
+    //     ->name('view-orders');
     //trang chi tiết đơn hàng
     Route::get('/order/{id}', [ViewOrderDetailController::class, 'show'])->name('view-order-detail');
 
@@ -86,7 +87,24 @@ Route::middleware(['auth', 'admin_check'])->group(function () {
             Route::get('delete-product/{id}', [ProductController::class, 'edit'])->name('edit');
             Route::put('edit-product/{id}', [ProductController::class, 'update'])->name('update');
             Route::delete('delete-product/{id}', [ProductController::class, 'destroy'])->name('destroy');
+            // Route cho trang sản phẩm đã xóa
+            Route::get('trashed-products', [ProductController::class, 'trashed'])->name('trashed');
+
+            // Route để khôi phục sản phẩm đã xóa
+            Route::patch('restore-product/{id}', [ProductController::class, 'restore'])->name('restore');
+
+            // Route để xóa vĩnh viễn sản phẩm đã xóa (tùy chọn)
+            Route::delete('force-delete-product/{id}', [ProductController::class, 'forceDelete'])->name('force-delete');
         });
+
+        // Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
+        //     Route::get('list-orders', [OrderController::class, 'index'])->name('index');
+        //     Route::get('edit-order/{order}', [OrderController::class, 'edit'])->name('edit');
+        //     Route::put('edit-order/{order}', [OrderController::class, 'update'])->name('update');
+        //     // Bạn có thể thêm các route khác nếu cần, ví dụ như xem chi tiết đơn hàng (show)
+        //     Route::get('view-order/{order}', [OrderController::class, 'show'])->name('show');
+        // });
+        
     });
 });
 

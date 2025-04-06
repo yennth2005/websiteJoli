@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('product_variants', function (Blueprint $table) {
-            $table->timestamps(); // Thêm created_at và updated_at
+        Schema::table('carts', function (Blueprint $table) {
+            $table->timestamp('updated_at')->nullable();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('product_variants', function (Blueprint $table) {
-            $table->dropTimestamps();
+        Schema::table('carts', function (Blueprint $table) {
+            $table->dropColumn('updated_at');
         });
     }
 };
