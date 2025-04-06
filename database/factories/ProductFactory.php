@@ -2,10 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Http\Controllers\admin\CategoryController;
-use App\Models\Product;
+use App\Models\Category;
+use App\Models\Color;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
@@ -17,18 +16,20 @@ class ProductFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    protected $model = Product::class;
-
-    public function definition()
+    public function definition(): array
     {
-        // Lấy ngẫu nhiên một ID từ bảng `categories`
-        $categoryId = DB::table('categories')->inRandomOrder()->value('id');
+        $price = fake()->randomFloat(2, 10, 1000);
+        $salePrice = fake()->optional()->randomFloat(2, 5, $price - 1);
 
         return [
-            'name' => $this->faker->word(),
-            'description' => $this->faker->sentence(),
-            'category_id' => $categoryId ?? 1, // Nếu không có category thì đặt mặc định là 1
-            'status' => 'active',
+            'category_id' => Category::factory(), // Tạo một category ngẫu nhiên nếu chưa có
+            'name' => fake()->sentence(3),
+            'color_id' => Color::factory(),
+            'image' => fake()->imageUrl(640, 480, 'products', true),
+            'description' => fake()->paragraph(3),
+            'price' => $price,
+            'sale_price' => $salePrice,
+            'stock' => fake()->numberBetween(0, 100),
         ];
     }
 }

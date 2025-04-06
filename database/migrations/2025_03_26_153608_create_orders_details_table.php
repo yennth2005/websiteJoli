@@ -14,15 +14,15 @@ return new class extends Migration
         Schema::create('orders_details', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('order_id');
-            $table->unsignedInteger('product_variant_id');
+            $table->unsignedInteger('product_id');
             $table->integer('quantity');
             $table->decimal('price', 10, 2);
             
             $table->foreign('order_id')
                   ->references('id')->on('orders')
                   ->onDelete('cascade');
-            $table->foreign('product_variant_id')
-                  ->references('id')->on('product_variants')
+            $table->foreign('product_id')
+                  ->references('id')->on('products')
                   ->onDelete('cascade');
         });
     }
