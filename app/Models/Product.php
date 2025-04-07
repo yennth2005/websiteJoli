@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
+
     use HasFactory, SoftDeletes;
     protected $fillable = [
         'id',
@@ -43,16 +44,16 @@ class Product extends Model
     /**
      * The orders that belong to the product.
      */
-    // public function orders(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Order::class, 'orders_details')->withPivot('quantity', 'price');
-    // }
+    public function orders(): BelongsToMany
+    {
+        return $this->belongsToMany(Order::class, 'orders_details')->withPivot('quantity', 'price');
+    }
 
     /**
      * The carts that belong to the product.
      */
-    // public function carts(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Cart::class, 'cart_items')->withPivot('quantity');
-    // }
+    public function carts(): BelongsToMany
+    {
+        return $this->belongsToMany(Cart::class, 'cart_items')->withPivot('quantity');
+    }
 }
