@@ -2,12 +2,11 @@
 
 @section('content')
 <div class="container">
-    <h1 class="mb-4">Quản lý sản phẩm</h1>
+    <h1 class="mb-4">Sản phẩm đã xoá</h1>
     <div class="d-flex gap-2 mb-3">
         <a href="{{ route('admin.products.create') }}" class="btn btn-primary btn"><i class="fas fa-plus"></i> Thêm mới</a>
-        <a href="{{ route('admin.products.trashed') }}" class="btn btn-info btn"><i class="fas fa-trash"></i> Sản phẩm đã xóa</a>
+        <a href="{{ route('admin.products.index') }}" class="btn btn-info btn"><i class="fas fa-list"></i> Danh sách sản phẩm</a>
     </div>
-
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
@@ -27,7 +26,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($products as $product)
+            @foreach ($trashedProducts as $product)
                 <tr>
                     <td>{{ $product->id }}</td>
                     <td>
@@ -59,20 +58,23 @@
                     </td>
                     <td>
                         <div class="d-flex gap-2">
-                            <a href="{{ route('admin.products.edit', $product->id) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i> Sửa</a>
-                        <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?')"><i class="fas fa-trash"></i> Xóa</button>
-                        </form>
+                            <form action="{{ route('admin.products.restore', $product->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn btn-warning btn-sm"><i class="fas fa-undo"></i> Khôi phục</button>
+                            </form>
+                            <form action="{{ route('admin.products.force-delete', $product->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa vĩnh viễn?')"><i class="fas fa-trash"></i> Xóa</button>
+                            </form>
                         </div>
-                        
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 
-    {{ $products->links('pagination::bootstrap-5') }}
+    {{ $trashedProducts->links('pagination::bootstrap-5') }}
 </div>
 @endsection

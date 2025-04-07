@@ -14,16 +14,16 @@ return new class extends Migration
         Schema::create('cart_items', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('cart_id');
-            $table->unsignedInteger('product_variant_id');
+            $table->unsignedInteger('product_id');
             $table->integer('quantity')->default(1);
             
-            $table->unique(['cart_id', 'product_variant_id']);
+            $table->unique(['cart_id', 'product_id']);
             
             $table->foreign('cart_id')
-                  ->references('id')->on('cart')
+                  ->references('id')->on('carts')
                   ->onDelete('cascade');
-            $table->foreign('product_variant_id')
-                  ->references('id')->on('product_variants')
+            $table->foreign('product_id')
+                  ->references('id')->on('products')
                   ->onDelete('cascade');
         });
     }

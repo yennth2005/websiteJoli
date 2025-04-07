@@ -2,160 +2,176 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Models\Product;
-use App\Models\Category;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Color;
-use App\Models\ProductVariant;
+use App\Models\Category;
+use App\Models\Color; // Thêm use cho model Color
+use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    //
+
     public function index()
     {
-        
-            $products = DB::table('products')
-                ->join('categories', 'products.category_id', '=', 'categories.id')
-                ->leftJoin('product_variants', 'products.id', '=', 'product_variants.product_id')
-                ->leftJoin('colors', 'product_variants.color_id', '=', 'colors.id')
-                ->select(
-                    'products.id as product_id',
-                    'products.name as product_name',
-                    'products.description',
-                    'products.status',
-                    'products.image',
-                    'categories.name as category_name',
-                    'product_variants.id as variant_id',
-                    'colors.name as color_name',
-                    'colors.hex_code',
-                    DB::raw('COALESCE(product_variants.price, 0) as price'),
-                    DB::raw('COALESCE(product_variants.sale_price, 0) as sale_price'),
-                    DB::raw('COALESCE(product_variants.stock, 0) as stock')
-                )
-                ->orderBy('products.id', 'asc')
-                ->get();
-        
-            return view('admin.products.list', compact('products'));
-       
-        
+        $products = Product::with('category', 'color')->latest()->paginate(10); // Eager load color
+        return view('admin.products.list', compact('products'));
     }
+
+
     public function create()
     {
         $categories = Category::all();
-        $colors = Color::all(); // Lấy tất cả màu sắc
-    return view('admin.products.create', compact('categories', 'colors'));
-      
+        $colors = Color::all(); // Lấy danh sách màu sắc
+        return view('admin.products.create', compact('categories', 'colors'));
     }
 
-    // Xử lý thêm mới sản phẩm
+
     public function store(Request $request)
     {
-        // dd($request->all()); // Debug dữ liệu form gửi lên
-    
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+        $validator = Validator::make($request->all(), [
             'category_id' => 'required|exists:categories,id',
-            'status' => 'required|in:active,deleted',
+            'name' => 'required|string|max:255',
+            'color_id' => 'nullable|integer|exists:colors,id', // Validation cho color_id
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'color_id' => 'required|exists:colors,id',
+            'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'sale_price' => 'nullable|numeric|min:0',
+            'sale_price' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                function ($attribute, $value, $fail) use ($request) {
+                    $price = $request->input('price');
+
+                    if ($value !== null && $price !== null && $value >= $price) {
+                        $fail('Giá sale phải nhỏ hơn giá gốc.');
+                    }
+
+                    if ($value !== null && $price !== null && $price > 0) {
+                        $discountPercentage = (($price - $value) / $price) * 100;
+                        if ($discountPercentage > 10) {
+                            $fail('Mức giảm giá không được vượt quá 10%. Hiện tại là ' . round($discountPercentage, 2) . '%.');
+                        }
+                    }
+                },
+            ],
             'stock' => 'required|integer|min:0',
+            'status' => 'nullable|in:active,deleted',
         ]);
-    
-        DB::beginTransaction();
-        try {
-            // Lưu sản phẩm vào bảng `products`
-            $productData = $request->only(['name', 'description', 'category_id', 'status']);
-    
-            if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('products', 'public');
-                $productData['image'] = $imagePath;
-            }
-    
-            $product = Product::create($productData);
-    
-            // Lưu biến thể sản phẩm vào bảng `product_variants`
-            ProductVariant::create([
-                'product_id' => $product->id,
-                'color_id' => $request->color_id,
-                'price' => $request->price,
-                'sale_price' => $request->sale_price,
-                'stock' => $request->stock,
-            ]);
-    
-            DB::commit();
-            return redirect()->route('admin.products.index')->with('success', 'Sản phẩm đã được thêm!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Lỗi khi thêm sản phẩm: ' . $e->getMessage()]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
+
+        $productData = $request->all();
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('products', 'public');
+            $productData['image'] = $imagePath;
+        }
+
+        Product::create($productData);
+
+        return redirect()->route('admin.products.index')->with('success', 'Thêm sản phẩm thành công!');
     }
-    
 
-    
-   
-    
-    
 
-    // Hiển thị form chỉnh sửa sản phẩm
     public function edit($id)
     {
         $product = Product::findOrFail($id);
         $categories = Category::all();
-        $colors = Color::all(); // Lấy tất cả màu sắc
-        return view('admin.products.edit', compact('product', 'categories','colors'));
+        $colors = Color::all(); // Lấy danh sách màu sắc
+        return view('admin.products.edit', compact('product', 'categories', 'colors'));
     }
 
-    // Xử lý cập nhật sản phẩm
+
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
-    
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'color_id' => 'required|exists:colors,id',
-            'price' => 'required|numeric|min:0',
-            'sale_price' => 'nullable|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-    
-        // Cập nhật sản phẩm
-        $product->update([
-            'name' => $request->name,
-            'category_id' => $request->category_id,
-            'image' => $request->hasFile('image') ? $request->file('image')->store('products', 'public') : $product->image,
-        ]);
-    
-        // Cập nhật biến thể sản phẩm
-        $product->variants()->updateOrCreate(
-            ['product_id' => $product->id],
-            [
-                'color_id' => $request->color_id,
-                'price' => $request->price,
-                'sale_price' => $request->sale_price ?? 0,
-                'stock' => $request->stock,
-            ]
-        );
-    
-        return redirect()->route('admin.products.index')->with('success', 'Sản phẩm đã được cập nhật!');
-    }
-    
-    
-    
 
-    // Xóa sản phẩm
+        $validator = Validator::make($request->all(), [
+            'category_id' => 'sometimes|required|exists:categories,id',
+            'name' => 'sometimes|required|string|max:255',
+            'color_id' => 'nullable|integer|exists:colors,id', // Validation cho color_id
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'description' => 'nullable|string',
+            'price' => 'sometimes|required|numeric|min:0',
+            'sale_price' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                function ($attribute, $value, $fail) use ($request) {
+                    $price = $request->input('price');
+
+                    if ($value !== null && $price !== null && $value >= $price) {
+                        $fail('Giá sale phải nhỏ hơn giá gốc.');
+                    }
+
+                    if ($value !== null && $price !== null && $price > 0) {
+                        $discountPercentage = (($price - $value) / $price) * 100;
+                        if ($discountPercentage > 10) {
+                            $fail('Mức giảm giá không được vượt quá 10%. Hiện tại là ' . round($discountPercentage, 2) . '%.');
+                        }
+                    }
+                },
+            ],
+            'stock' => 'sometimes|required|integer|min:0',
+            'status' => 'nullable|in:active,deleted',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $productData = $request->all();
+
+        if ($request->hasFile('image')) {
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
+            $imagePath = $request->file('image')->store('products', 'public');
+            $productData['image'] = $imagePath;
+        }
+
+        $product->update($productData);
+
+        return redirect()->route('admin.products.index')->with('success', 'Cập nhật sản phẩm thành công!');
+    }
+
     public function destroy($id)
     {
-        Product::destroy($id);
-        return redirect()->route('admin.products.index')->with('success', 'Sản phẩm đã bị xóa!');
+        $product = Product::findOrFail($id);
+        $product->delete();
+
+        return redirect()->route('admin.products.index')->with('success', 'Xóa sản phẩm thành công!');
     }
 
-    
+    public function trashed()
+    {
+        $trashedProducts = Product::onlyTrashed()->with('category', 'color')->latest()->paginate(10); // Eager load color
+        return view('admin.products.trashed', compact('trashedProducts'));
+    }
+
+    public function restore($id)
+    {
+        $product = Product::withTrashed()->findOrFail($id);
+        $product->restore();
+
+        return redirect()->route('admin.products.trashed')->with('success', 'Khôi phục sản phẩm thành công!');
+    }
+
+
+    public function forceDelete($id)
+    {
+        $product = Product::withTrashed()->findOrFail($id);
+
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
+        }
+
+        $product->forceDelete();
+
+        return redirect()->route('admin.products.trashed')->with('success', 'Xóa vĩnh viễn sản phẩm thành công!');
+    }
 }
