@@ -8,16 +8,23 @@
                 </div>
                 <div class="xc-header-one__right">
                     <div class="xc-header-one__search d-none d-xl-block">
-                        <form action="#">
-                            <input type="search" placeholder="Search">
-                            <select>
-                                <option value="1" selected disabled>All category</option>
-                                <option value="2">Health & Beauty</option>
-                                <option value="3">Digital & Electronics</option>
-                                <option value="4">Tools, equipments</option>
+                        <form method="GET" action="{{ route('products.search') }}">
+                            <!-- Trường tìm kiếm -->
+                            <input type="search" name="search" placeholder="Tìm kiếm sản phẩm">
+
+                            <!-- Danh mục -->
+                            <select name="category" id="category">
+                                <option value="" selected disabled>Chọn danh mục</option>
+                                <option value="1">Health & Beauty</option>
+                                <option value="2">Digital & Electronics</option>
+                                <option value="3">Tools, Equipments</option>
+                                <option value="4">Other</option>
                             </select>
-                            <button type="submit">Search</button>
+
+                            <!-- Nút tìm kiếm -->
+                            <button type="submit">Tìm kiếm</button>
                         </form>
+
                     </div>
                     <div class="xc-header-one__btns d-none d-lg-flex">
                         <a href="/dashboard" class="xc-header-one__btn">
@@ -29,7 +36,7 @@
                         <a href="#" class="xc-header-one__btn">
                             <i class="icon-heart"></i>Wishlist
                         </a>
-                        <a href="cart.html" class="xc-header-one__btn">
+                        <a href="/cart" class="xc-header-one__btn">
                             <i class="icon-grocery-store"></i>My cart
                         </a>
                         <!-- mobile drawer  -->
@@ -61,10 +68,9 @@
                                     <a href="/">Home</a>
                                 </li>
                                 <li><a href="about.html">About</a></li>
-                                <li class="has-dropdown"><a href="shop.html">Shop</a>
+                                <li class="has-dropdown"><a href="/products/search">Shop</a>
                                     <ul class="submenu">
-                                        <li><a href="shop.html">Shop</a>
-                                        <li><a href="product-details.html">Product Details</a></li>
+                                        <li><a href="/products/search">Shop</a>
                                         <li><a href="/cart">Cart</a></li>
                                         <li><a href="/checkout">Checkout</a></li>
                                     </ul>
@@ -112,7 +118,7 @@
                     <div></div>
                     <div></div>
                     <div class="xc-header-two__btns d-none d-lg-flex">
-                        <a href="#" class="xc-header-two__btn">
+                        <a href="/cart" class="xc-header-two__btn">
                             <i class="icon-shopping-cart"></i>
                             <span class="xc-cart-count">2</span>
                         </a>
