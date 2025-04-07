@@ -97,13 +97,13 @@ Route::middleware(['auth', 'admin_check'])->group(function () {
             Route::delete('force-delete-product/{id}', [ProductController::class, 'forceDelete'])->name('force-delete');
         });
 
-        // Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
-        //     Route::get('list-orders', [OrderController::class, 'index'])->name('index');
-        //     Route::get('edit-order/{order}', [OrderController::class, 'edit'])->name('edit');
-        //     Route::put('edit-order/{order}', [OrderController::class, 'update'])->name('update');
-        //     // Bạn có thể thêm các route khác nếu cần, ví dụ như xem chi tiết đơn hàng (show)
-        //     Route::get('view-order/{order}', [OrderController::class, 'show'])->name('show');
-        // });
+        Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
+            Route::get('list-orders', [OrderController::class, 'index'])->name('index');
+            Route::get('edit-order/{order}', [OrderController::class, 'edit'])->name('edit');
+            Route::put('edit-order/{order}', [OrderController::class, 'update'])->name('update');
+            // Bạn có thể thêm các route khác nếu cần, ví dụ như xem chi tiết đơn hàng (show)
+            Route::get('view-order/{order}', [OrderController::class, 'show'])->name('show');
+        });
         
     });
 });
