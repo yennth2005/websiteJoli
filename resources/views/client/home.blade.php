@@ -235,158 +235,48 @@
                 <div class="xc-sec-heading xc-sec-heading-three text-center">
                     <h3 class="xc-sec-heading__title xc-style-3">Trending Outfits</h3>
                     <div class="xc-sec-heading__shape">
-                        <img src="{{ asset('assets/client/img/shapes/sec-title-border.png') }}" alt="border">
+                        <img src="assets/img/shapes/sec-title-border.png" alt="border">
                     </div>
                 </div>
                 <div class="row gutter-y-30">
-                    <div class="col-lg-3 col-md-6">
-                        <div class="xc-product-eight__item">
-                            <div class="xc-product-eight__img">
-                                <img src="{{ asset('assets/client/img/products/product-fas-5.png') }}" alt="fas">
-                                <span class="xc-product-eight__offer">30% off</span>
-                                <div class="xc-product-eight__icons">
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-love"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Wishlist</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-magnifying-glass"></i>
-                                        <span class="xc-product-eight__tooltip">Quick view</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-shopping-cart"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Cart</span>
-                                    </button>
+                    @foreach ($products as $product)
+                        <div class="col-lg-3 col-md-6">
+                            <div class="xc-product-eight__item">
+                                <div class="xc-product-eight__img">
+                                    <img src="{{ asset('storage/images/' . $product->image) }}" alt="fas">
+                                    <div class="xc-product-eight__icons">
+                                        <button class="xc-product-eight__action">
+                                            <i class="icon-love"></i>
+                                            <span class="xc-product-eight__tooltip">Add To Wishlist</span>
+                                        </button>
+                                        <button class="xc-product-eight__action">
+                                            <i class="icon-magnifying-glass"></i>
+                                            <span class="xc-product-eight__tooltip">Quick view</span>
+                                        </button>
+                                        <button class="xc-product-eight__action">
+                                            <i class="icon-shopping-cart"></i>
+                                            <span class="xc-product-eight__tooltip">Add To Cart</span>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="xc-product-eight__content">
-                                <div class="xc-product-eight__ratting">
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    (25 Reviews)
+                                <div class="xc-product-eight__content">
+                                    <div class="xc-product-eight__ratting">
+                                        <i class="icon-star"></i>
+                                        <i class="icon-star"></i>
+                                        <i class="icon-star"></i>
+                                        <i class="icon-star"></i>
+                                        <i class="icon-star"></i>
+                                        (25 Reviews)
+                                    </div>
+                                    <h3 class="xc-product-eight__title"><a
+                                            href="{{ route('product.show', ['id' => $product->id]) }}">{{ $product->name }}</a>
+                                    </h3>
+                                    <h5 class="xc-product-eight__price"> {{ number_format($product->price, 0, ',', '.') }}
+                                        VNĐ</h5>
                                 </div>
-                                <h3 class="xc-product-eight__title"><a href="product-details.html">women Billie
-                                        Eilish
-                                        n21</a>
-                                </h3>
-                                <h5 class="xc-product-eight__price"><del>$489</del> $289</h5>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="xc-product-eight__item">
-                            <div class="xc-product-eight__img">
-                                <img src="{{ asset('assets/client/img/products/product-fas-6.png') }}" alt="fas">
-                                <span class="xc-product-eight__offer">30% off</span>
-                                <div class="xc-product-eight__icons">
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-love"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Wishlist</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-magnifying-glass"></i>
-                                        <span class="xc-product-eight__tooltip">Quick view</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-shopping-cart"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Cart</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="xc-product-eight__content">
-                                <div class="xc-product-eight__ratting">
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    (25 Reviews)
-                                </div>
-                                <h3 class="xc-product-eight__title"><a href="product-details.html">women Billie
-                                        Eilish
-                                        n21</a>
-                                </h3>
-                                <h5 class="xc-product-eight__price"><del>$489</del> $289</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="xc-product-eight__item">
-                            <div class="xc-product-eight__img">
-                                <img src="{{ asset('assets/client/img/products/product-fas-7.png') }}" alt="fas">
-                                <span class="xc-product-eight__offer">30% off</span>
-                                <div class="xc-product-eight__icons">
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-love"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Wishlist</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-magnifying-glass"></i>
-                                        <span class="xc-product-eight__tooltip">Quick view</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-shopping-cart"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Cart</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="xc-product-eight__content">
-                                <div class="xc-product-eight__ratting">
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    (25 Reviews)
-                                </div>
-                                <h3 class="xc-product-eight__title"><a href="product-details.html">women Billie
-                                        Eilish
-                                        n21</a>
-                                </h3>
-                                <h5 class="xc-product-eight__price"><del>$489</del> $289</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="xc-product-eight__item">
-                            <div class="xc-product-eight__img">
-                                <img src="{{ asset('assets/client/img/products/product-fas-8.png') }}" alt="fas">
-                                <span class="xc-product-eight__offer">30% off</span>
-                                <div class="xc-product-eight__icons">
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-love"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Wishlist</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-magnifying-glass"></i>
-                                        <span class="xc-product-eight__tooltip">Quick view</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-shopping-cart"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Cart</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="xc-product-eight__content">
-                                <div class="xc-product-eight__ratting">
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    (25 Reviews)
-                                </div>
-                                <h3 class="xc-product-eight__title"><a href="product-details.html">women Billie
-                                        Eilish
-                                        n21</a>
-                                </h3>
-                                <h5 class="xc-product-eight__price"><del>$489</del> $289</h5>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -437,169 +327,6 @@
             </div>
         </div>
         <!-- countdown end -->
-
-        <!-- product eight start  -->
-        <div class="xc-product-eight pt-80 pb-80">
-            <div class="container">
-                <div class="xc-sec-heading xc-sec-heading-three text-center">
-                    <h3 class="xc-sec-heading__title xc-style-3">Trending Outfits</h3>
-                    <div class="xc-sec-heading__shape">
-                        <img src="{{ asset('assets/client/img/shapes/sec-title-border.png') }}" alt="border">
-                    </div>
-                </div>
-                <div class="row gutter-y-30">
-                    <div class="col-lg-3 col-md-6">
-                        <div class="xc-product-eight__item">
-                            <div class="xc-product-eight__img">
-                                <img src="{{ asset('assets/client/img/products/product-fas-1.png') }}" alt="fas">
-                                <span class="xc-product-eight__offer">30% off</span>
-                                <div class="xc-product-eight__icons">
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-love"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Wishlist</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-magnifying-glass"></i>
-                                        <span class="xc-product-eight__tooltip">Quick view</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-shopping-cart"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Cart</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="xc-product-eight__content">
-                                <div class="xc-product-eight__ratting">
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    (25 Reviews)
-                                </div>
-                                <h3 class="xc-product-eight__title"><a href="product-details.html">women Billie
-                                        Eilish
-                                        n21</a>
-                                </h3>
-                                <h5 class="xc-product-eight__price"><del>$489</del> $289</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="xc-product-eight__item">
-                            <div class="xc-product-eight__img">
-                                <img src="{{ asset('assets/client/img/products/product-fas-2.png') }}" alt="fas">
-                                <span class="xc-product-eight__offer">30% off</span>
-                                <div class="xc-product-eight__icons">
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-love"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Wishlist</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-magnifying-glass"></i>
-                                        <span class="xc-product-eight__tooltip">Quick view</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-shopping-cart"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Cart</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="xc-product-eight__content">
-                                <div class="xc-product-eight__ratting">
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    (25 Reviews)
-                                </div>
-                                <h3 class="xc-product-eight__title"><a href="product-details.html">women Billie
-                                        Eilish
-                                        n21</a>
-                                </h3>
-                                <h5 class="xc-product-eight__price"><del>$489</del> $289</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="xc-product-eight__item">
-                            <div class="xc-product-eight__img">
-                                <img src="{{ asset('assets/client/img/products/product-fas-3.png') }}" alt="fas">
-                                <span class="xc-product-eight__offer">30% off</span>
-                                <div class="xc-product-eight__icons">
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-love"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Wishlist</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-magnifying-glass"></i>
-                                        <span class="xc-product-eight__tooltip">Quick view</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-shopping-cart"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Cart</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="xc-product-eight__content">
-                                <div class="xc-product-eight__ratting">
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    (25 Reviews)
-                                </div>
-                                <h3 class="xc-product-eight__title"><a href="product-details.html">women Billie
-                                        Eilish
-                                        n21</a>
-                                </h3>
-                                <h5 class="xc-product-eight__price"><del>$489</del> $289</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="xc-product-eight__item">
-                            <div class="xc-product-eight__img">
-                                <img src="{{ asset('assets/client/img/products/product-fas-4.png') }}" alt="fas">
-                                <span class="xc-product-eight__offer">30% off</span>
-                                <div class="xc-product-eight__icons">
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-love"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Wishlist</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-magnifying-glass"></i>
-                                        <span class="xc-product-eight__tooltip">Quick view</span>
-                                    </button>
-                                    <button class="xc-product-eight__action">
-                                        <i class="icon-shopping-cart"></i>
-                                        <span class="xc-product-eight__tooltip">Add To Cart</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="xc-product-eight__content">
-                                <div class="xc-product-eight__ratting">
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    <i class="icon-star"></i>
-                                    (25 Reviews)
-                                </div>
-                                <h3 class="xc-product-eight__title"><a href="product-details.html">women Billie
-                                        Eilish
-                                        n21</a>
-                                </h3>
-                                <h5 class="xc-product-eight__price"><del>$489</del> $289</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- product eight end  -->
 
         <!-- banner nine start  -->
         <div class="xc-banner-nine pb-80">
