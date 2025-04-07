@@ -9,6 +9,7 @@ use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\CheckoutController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Client\ProductClientController;
+use App\Http\Controllers\client\ProductController as ClientProductController;
 use App\Http\Controllers\Client\ViewOrderDetailController;
 use App\Http\Controllers\Client\ViewOrdersController;
 use App\Http\Controllers\ProfileController;
@@ -24,6 +25,9 @@ Route::group([], function () {
 
     // Giỏ hàng
     Route::get('/cart', [CartController::class, 'index'])->name('cart');
+
+    //Tìm kiếm và lọc
+    Route::get('/products/search', [ClientProductController::class, 'search'])->name('products.search');
 });
 
 
@@ -104,7 +108,6 @@ Route::middleware(['auth', 'admin_check'])->group(function () {
             // Bạn có thể thêm các route khác nếu cần, ví dụ như xem chi tiết đơn hàng (show)
             Route::get('view-order/{order}', [OrderController::class, 'show'])->name('show');
         });
-        
     });
 });
 
