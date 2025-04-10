@@ -119,8 +119,7 @@
                     <div></div>
                     <div class="xc-header-two__btns d-none d-lg-flex">
                         <a href="/cart" class="xc-header-two__btn">
-                            <i class="icon-shopping-cart"></i>
-                            <span class="xc-cart-count">2</span>
+                            <i class="icon-shopping-cart"{{ $count_cart }}></i>
                         </a>
                         <a href="#" class="xc-header-two__btn">
                             <i class="icon-love"></i>

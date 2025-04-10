@@ -23,8 +23,12 @@ Route::group([], function () {
     // Chi tiết sản phẩm
     Route::get('/product/{id}', [ProductClientController::class, 'show'])->name('product.show');
 
-    // Giỏ hàng
-    Route::get('/cart', [CartController::class, 'index'])->name('cart');
+
+    Route::get('/cart', [CartController::class, 'index'])->name('cart'); // Hiển thị giỏ hàng
+    Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add'); // Thêm sản phẩm
+    Route::post('/cart/remove/{index}', [CartController::class, 'remove'])->name('cart.remove'); // Xóa sản phẩm
+    Route::post('/cart/update/{index}', [CartController::class, 'update'])->name('cart.update'); // (Tùy chọn) cập nhật số lượng
+
 
     //Tìm kiếm và lọc
     Route::get('/products/search', [ClientProductController::class, 'search'])->name('products.search');
