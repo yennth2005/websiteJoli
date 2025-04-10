@@ -82,128 +82,66 @@
                     <div class="col-xl-6 col-lg-6">
                         <div class="product__details-thumb-tab">
                             <div class="product__details-thumb-content w-img">
-                                <div class="tab-content" id="nav-tabContent">
-                                    <div class="tab-pane fade show active" id="nav-one" role="tabpanel"
-                                        aria-labelledby="nav-one-tab">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade show active">
                                         <img src="{{ asset('storage/images/' . $product->image) }}" alt="">
                                     </div>
                                 </div>
                             </div>
-                            <div class="product__details-thumb-nav xc-tab">
-                                <nav>
-                                    <div class="nav nav-tabs justify-content-sm-between" id="nav-tab" role="tablist">
-                                        <button class="nav-link active" id="nav-one-tab" data-bs-toggle="tab"
-                                            data-bs-target="#nav-one" type="button" role="tab" aria-controls="nav-one"
-                                            aria-selected="true">
-                                            <img src="{{ asset('storage/images/' . $product->image) }}" alt="">
-                                        </button>
-                                        <button class="nav-link" id="nav-two-tab" data-bs-toggle="tab"
-                                            data-bs-target="#nav-two" type="button" role="tab" aria-controls="nav-two"
-                                            aria-selected="false">
-                                            <img src="{{ asset('storage/images/' . $product->image) }}" alt="">
-                                        </button>
-                                        <button class="nav-link" id="nav-three-tab" data-bs-toggle="tab"
-                                            data-bs-target="#nav-three" type="button" role="tab"
-                                            aria-controls="nav-three" aria-selected="false">
-                                            <img src="{{ asset('storage/images/' . $product->image) }}" alt="">
-                                        </button>
-                                        <button class="nav-link" id="nav-four-tab" data-bs-toggle="tab"
-                                            data-bs-target="#nav-four" type="button" role="tab"
-                                            aria-controls="nav-four" aria-selected="false">
-                                            <img src="{{ asset('storage/images/' . $product->image) }}" alt="">
-                                        </button>
-                                    </div>
-                                </nav>
-                            </div>
                         </div>
                     </div>
+
                     <div class="col-xl-6 col-lg-6">
                         <div class="product__details-wrapper">
-
-                            <div class="product__details-stock">
-                                <span>18 In Stock</span>
-                            </div>
                             <h3 class="product__details-title">{{ $product->name }}</h3>
-
-                            <div class="product__details-rating d-flex align-items-center">
-                                <div class="product__rating product__rating-2 d-flex">
-                                    <span>
-                                        <i class="icon-star"></i>
-                                    </span>
-                                    <span>
-                                        <i class="icon-star"></i>
-                                    </span>
-                                    <span>
-                                        <i class="icon-star"></i>
-                                    </span>
-                                    <span>
-                                        <i class="icon-star"></i>
-                                    </span>
-                                    <span>
-                                        <i class="icon-star"></i>
-                                    </span>
-                                </div>
-                                <div class="product__details-rating-count">
-                                    <span>(4 customer review)</span>
-                                </div>
+                            <p>Mô tả: {{ $product->description }}</p>
+                            <div class="product__details-stock">
+                                @if ($product->stock > 0)
+                                    <span>{{ $product->stock }} sản phẩm còn lại</span>
+                                @else
+                                    <span class="text-danger">Hết hàng</span>
+                                @endif
                             </div>
-
-                            <p>Mô tả: {{ $product->description }}
-                            </p>
 
                             <div class="product__details-price">
-
                                 <span class="product__details-ammount new-ammount">
-                                    {{ number_format($product->price, 0, ',', '.') }} VNĐ
+                                    {{ number_format($product->price, 0, ',', '.') }} $
                                 </span>
                             </div>
 
                             <div class="product__details-action d-flex flex-wrap align-items-center">
-                                <a href="cart.html" class="product-add-cart-btn swiftcart-btn">
-                                    Đặt Ngay
-                                </a>
-                                <button type="button" class="product-action-btn">
-                                    <i class="icon-love"></i>
-                                </button>
-                                <button type="button" class="product-action-btn">
-                                    <i class="icon-eye"></i>
-                                </button>
-                            </div>
-                            <div class="product__details-sku product__details-more">
-                                <p>SKU:</p>
-                                <span>29045-SB-8</span>
-                            </div>
-                            <div class="product__details-categories product__details-more">
-                                <p>Categories:</p>
-                                <span>
-                                    <a href="#">Bag,</a>
-                                </span>
-                                <span>
-                                    <a href="#">Ladies Bag,</a>
-                                </span>
-                                <span>
-                                    <a href="#">Handbags</a>
-                                </span>
-                            </div>
-                            <div class="product__details-tags">
-                                <span>Tags:</span>
-                                <a href="#">Bag</a>
-                                <a href="#">Woman</a>
-                                <a href="#">fashion</a>
-                            </div>
-                            <div class="product__details-share">
-                                <span>Share:</span>
+                                @if ($product->stock > 0)
+                                    <form action="{{ route('cart.add') }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <input type="hidden" name="name" value="{{ $product->name }}">
+                                        <input type="hidden" name="price" value="{{ $product->price }}">
+                                        <input type="hidden" name="stock" value="{{ $product->stock }}">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <input type="number" id="quantity" name="quantity" class="form-control"
+                                            value="1" min="1" max="{{ $product->stock }}" required
+                                            oninput="validateQuantity(this)">
+                                        <span id="quantity-error" class="text-danger mt-1 d-block"
+                                            style="display:none;"></span>
 
-                                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                                <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-                                <a href="#"><i class="fa-brands fa-youtube"></i></a>
+
+                                        <button type="submit" class="btn btn-primary btn-lg w-100"><i
+                                                class="bi bi-cart-plus-fill me-2"></i>
+                                            Thêm vào giỏ hàng
+                                        </button>
+                                    </form>
+                                @else
+                                    <button type="button" class="product-add-cart-btn swiftcart-btn disabled" disabled>
+                                        Hết hàng
+                                    </button>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
         <!-- product details area end -->
 
         <!-- product details tab area start -->
@@ -547,3 +485,20 @@
 
     </div>
 @endsection
+
+<script>
+    function validateQuantity(input) {
+        const max = parseInt(input.max);
+        const value = parseInt(input.value);
+        const errorSpan = document.getElementById('quantity-error');
+
+        if (value > max) {
+            errorSpan.style.display = 'block';
+            errorSpan.innerText = `Bạn chỉ có thể mua tối đa ${max} sản phẩm.`;
+            input.setCustomValidity("Invalid"); // để ngăn submit
+        } else {
+            errorSpan.style.display = 'none';
+            input.setCustomValidity(""); // cho phép submit
+        }
+    }
+</script>

@@ -1,7 +1,8 @@
 @extends('client.layouts.main')
 
 @section('content')
-    <!-- xc-breadcrumb area start -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <div class="xc-breadcrumb__area base-bg">
         <div class="xc-breadcrumb__bg w-img xc-breadcrumb__overlay"></div>
         <div class="container">
@@ -18,147 +19,145 @@
             </div>
         </div>
     </div>
-    <!-- xc-breadcrumb area end -->
 
     <div class="xc-cart-page pt-80 pb-80">
-        <div class="container">
-            <form action="#">
-                <div class="row gutter-y-30 gx-5">
-                    <div class="col-lg-8 col-xl-9">
-                        <div class="xc-cart-page__table">
-                            <table class="table">
-                                <thead>
+        <div class="container" id="cart-container">
+            <div class="row gutter-y-30 gx-5">
+                <div class="col-lg-8 col-xl-9">
+                    <div class="xc-cart-page__table">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php $total = 0; @endphp
+                                @forelse ($cart as $index => $item)
+                                    @php
+                                        $subtotal = $item['price'] * $item['quantity'];
+                                        $total += $subtotal;
+                                    @endphp
                                     <tr>
-                                        <th class="product-thumbnail">Images</th>
-                                        <th class="cart-product-name">Product</th>
-                                        <th class="product-price">Unit Price</th>
-                                        <th class="product-quantity">Quantity</th>
-                                        <th class="product-subtotal">Total</th>
-                                        <th class="product-remove">Remove</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="product-thumbnail"><a href="product-details.html"><img
-                                                    src="assets/img/cart/cart-1.png" alt=""></a></td>
-                                        <td class="product-name"><a href="product-details.html">Level Bolt Smart Lock</a>
-                                        </td>
-                                        <td class="product-price"><span class="amount">$130.00</span></td>
-                                        <td class="product-quantity">
+                                        <td>{{ $item['name'] }}</td>
+                                        <td>{{ number_format($item['price'], 0, ',', '.') }} $</td>
+                                        <td>
                                             <div class="xc-product-quantity mt-10 mb-10">
-                                                <span class="xc-cart-minus sub">
+                                                <span class="xc-cart-minus" data-index="{{ $index }}">
                                                     <i class="fas fa-minus"></i>
                                                 </span>
-                                                <input class="xc-cart-input" type="text" value="1">
-                                                <span class="xc-cart-plus add">
+                                                <input class="xc-cart-input" type="number" value="{{ $item['quantity'] }}"
+                                                    min="1" data-index="{{ $index }}">
+                                                <span class="xc-cart-plus" data-index="{{ $index }}">
                                                     <i class="fas fa-plus"></i>
                                                 </span>
                                             </div>
                                         </td>
-                                        <td class="product-subtotal"><span class="amount">$130.00</span></td>
-                                        <td class="product-remove"><button type="submit"><i
-                                                    class="fa fa-times"></i></button></td>
+                                        <td class="item-subtotal">{{ number_format($subtotal, 0, ',', '.') }} $</td>
+                                        <td>
+                                            <form action="{{ route('cart.remove', $index) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-danger btn-sm">X</button>
+                                            </form>
+                                        </td>
                                     </tr>
+                                @empty
                                     <tr>
-                                        <td class="product-thumbnail"><a href="product-details.html"><img
-                                                    src="assets/img/cart/cart-2.png" alt=""></a></td>
-                                        <td class="product-name"><a href="product-details.html">Level Bolt Smart Lock</a>
-                                        </td>
-                                        <td class="product-price"><span class="amount">$130.00</span></td>
-                                        <td class="product-quantity">
-                                            <div class="xc-product-quantity mt-10 mb-10">
-                                                <span class="xc-cart-minus sub">
-                                                    <i class="fas fa-minus"></i>
-                                                </span>
-                                                <input class="xc-cart-input" type="text" value="1">
-                                                <span class="xc-cart-plus add">
-                                                    <i class="fas fa-plus"></i>
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal"><span class="amount">$130.00</span></td>
-                                        <td class="product-remove"><button type="submit"><i
-                                                    class="fa fa-times"></i></button></td>
+                                        <td colspan="6" class="text-center">Giỏ hàng trống</td>
                                     </tr>
-                                    <tr>
-                                        <td class="product-thumbnail"><a href="product-details.html"><img
-                                                    src="assets/img/cart/cart-3.png" alt=""></a></td>
-                                        <td class="product-name"><a href="product-details.html">Level Bolt Smart Lock</a>
-                                        </td>
-                                        <td class="product-price"><span class="amount">$130.00</span></td>
-                                        <td class="product-quantity">
-                                            <div class="xc-product-quantity mt-10 mb-10">
-                                                <span class="xc-cart-minus sub">
-                                                    <i class="fas fa-minus"></i>
-                                                </span>
-                                                <input class="xc-cart-input" type="text" value="1">
-                                                <span class="xc-cart-plus add">
-                                                    <i class="fas fa-plus"></i>
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td class="product-subtotal"><span class="amount">$130.00</span></td>
-                                        <td class="product-remove"><button type="submit"><i
-                                                    class="fa fa-times"></i></button></td>
-                                    </tr>
+                                @endforelse
 
-                                </tbody>
-                            </table>
-                        </div>
+                                <tr>
+                                    <td colspan="5" class="text-end"><strong>Tổng tiền:</strong></td>
+                                    <td><strong class="total-price">{{ number_format($total, 0, ',', '.') }} $</strong></td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
                     </div>
-                    <div class="col-md-6 col-lg-4 col-xl-3">
-                        <div class="shop_cart_widget xc-accordion">
-                            <div class="accordion" id="shop_size">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="size__widget">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#size_widget_collapse" aria-expanded="true"
-                                            aria-controls="size_widget_collapse">Shopping Cart
-                                        </button>
-                                    </h2>
-                                    <div id="size_widget_collapse" class="accordion-collapse collapse show"
-                                        aria-labelledby="size__widget" data-bs-parent="#shop_size" style="">
-                                        <div class="accordion-body">
-                                            <div class="cart-coupon-code">
-                                                <input type="text" placeholder="Coupon Code">
-                                                <button>Apply</button>
-                                            </div>
-                                            <div class="cart-subtitle">
-                                                <h4>Subtotal</h4>
-                                                <h4>$4589</h4>
-                                            </div>
-                                            <div class="cart-checkout">
-                                                <h4>Shipping</h4>
-                                                <div class="shop__widget-list">
-                                                    <div class="shop__widget-list-item-2">
-                                                        <input type="radio" name="pay" id="c-rate">
-                                                        <label for="c-rate">Flat rate</label>
-                                                    </div>
-                                                    <div class="shop__widget-list-item-2 has-orange">
-                                                        <input type="radio" name="pay" id="c-Free">
-                                                        <label for="c-Free">Free shipping</label>
-                                                    </div>
-                                                    <div class="shop__widget-list-item-2 has-green">
-                                                        <input type="radio" name="pay" id="c-pickup">
-                                                        <label for="c-pickup">Local pickup</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="cart-totails">
-                                                <h4>Subtotal</h4>
-                                                <h4>$4589</h4>
-                                            </div>
-                                            <p>Wetters, as opposed to using Content here, content here, making it look like
-                                                readable English. Many desktop </p>
-                                            <a class="cart-checkout-btn" href="checkout.html">Checkout</a>
+                </div>
+
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="shop_cart_widget xc-accordion">
+                        <div class="accordion" id="shop_size">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="size__widget">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#size_widget_collapse" aria-expanded="true"
+                                        aria-controls="size_widget_collapse">
+                                        Tóm tắt đơn hàng
+                                    </button>
+                                </h2>
+                                <div id="size_widget_collapse" class="accordion-collapse collapse show"
+                                    aria-labelledby="size__widget" data-bs-parent="#shop_size">
+                                    <div class="accordion-body">
+                                        <div class="cart-subtitle d-flex justify-content-between">
+                                            <h4>Tổng tiền:</h4>
+                                            <h4 class="total-price">{{ number_format($total, 0, ',', '.') }} $</h4>
                                         </div>
+                                        <a class="cart-checkout-btn btn btn-success w-100 mt-3"
+                                            href="{{ route('checkout') }}">Thanh toán</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            document.getElementById('cart-container').addEventListener('click', function(e) {
+                const button = e.target.closest('.xc-cart-plus, .xc-cart-minus');
+                if (!button) return;
+
+                const index = button.dataset.index;
+                const input = document.querySelector(`input[data-index="${index}"]`);
+                let quantity = parseInt(input.value);
+                quantity = button.classList.contains('xc-cart-plus') ? quantity + 1 : quantity - 1;
+                if (quantity < 1) quantity = 1;
+
+                input.value = quantity;
+                updateQuantity(index, quantity, input);
+            });
+
+            function updateQuantity(index, quantity, inputEl) {
+                fetch(`/cart/update/${index}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": csrfToken
+                        },
+                        body: JSON.stringify({
+                            quantity
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            const row = inputEl.closest('tr');
+                            row.querySelector('.item-subtotal').innerText = data.subtotal + ' $';
+                            document.querySelectorAll('.total-price').forEach(el => {
+                                el.innerText = data.total + ' $';
+                            });
+
+                            inputEl.setAttribute('value', quantity);
+                        } else {
+                            alert(data.message);
+                            inputEl.value = inputEl.getAttribute('value');
+                        }
+                    });
+            }
+        });
+    </script>
 @endsection
