@@ -18,6 +18,7 @@ class CartController extends Controller
     {
         $id = $request->input('product_id');
         $quantity = (int)$request->input('quantity', 1);
+        $action = $request->input('action');
 
         $product = Product::find($id);
         if (!$product) {
@@ -37,10 +38,15 @@ class CartController extends Controller
             'stock' => $product->stock,
             'image' => $product->image ?? null,
         ];
-
         session()->put('cart', $cart);
-        return redirect()->back()->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
+
+        if ($action === 'order') {
+            return redirect()->route('cart')->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
+        } else {
+            return redirect()->back()->with('success', 'Đã thêm sản phẩm vào giỏ hàng!');
+        }
     }
+
 
     public function remove($index)
     {

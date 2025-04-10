@@ -1,3 +1,66 @@
+<style>
+    .xc-header-one__btns {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        /* Giảm khoảng cách nếu cần */
+    }
+
+    .xc-header-one__btn {
+        position: relative;
+        /* Chỉ cần đặt relative cho các phần tử giỏ hàng */
+        display: inline-flex;
+        align-items: center;
+        font-size: 16px;
+        color: #333;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 10px 15px;
+        border-radius: 30px;
+        background-color: #f4f4f4;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .xc-header-one__btn:hover {
+        background-color: #e0e0e0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .icon-grocery-store {
+        font-size: 20px;
+        margin-right: 8px;
+    }
+
+    .cart-count {
+        position: absolute;
+        top: -5px;
+        right: -8px;
+        background-color: #ff4d4f;
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 50%;
+        min-width: 18px;
+        text-align: center;
+        line-height: 1.1;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .xc-header-one__btn:hover .cart-count {
+        background-color: #e43f3b;
+    }
+
+    /* Đảm bảo rằng các nút khác không bị ảnh hưởng */
+    .xc-header-one__btn i {
+        margin-right: 8px;
+    }
+
+    /* Điều chỉnh cho menu mobile */
+    .xc-header-one__hamburger {
+        display: none;
+    }
+</style>
 <header>
     <div class="xc-header-one bg-black" id="xc-header-sticky">
         <div class="container">
@@ -38,6 +101,7 @@
                         </a>
                         <a href="/cart" class="xc-header-one__btn">
                             <i class="icon-grocery-store"></i>My cart
+                            <span class="cart-count">{{ $count_cart }}</span>
                         </a>
                         <!-- mobile drawer  -->
                         <div class="xc-header-one__hamburger d-xl-none">
@@ -119,7 +183,7 @@
                     <div></div>
                     <div class="xc-header-two__btns d-none d-lg-flex">
                         <a href="/cart" class="xc-header-two__btn">
-                            <i class="icon-shopping-cart"{{ $count_cart }}></i>
+                            <i class="icon-shopping-cart"></i>
                         </a>
                         <a href="#" class="xc-header-two__btn">
                             <i class="icon-love"></i>
