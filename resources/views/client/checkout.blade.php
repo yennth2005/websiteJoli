@@ -1,165 +1,82 @@
 @extends('client.layouts.main')
 
 @section('content')
-    <div class="xc-breadcrumb__area base-bg">
-        <div class="xc-breadcrumb__bg w-img xc-breadcrumb__overlay"></div>
-        <div class="container">
-            <div class="row">
-                <div class="col-xxl-12">
-                    <div class="xc-breadcrumb__content p-relative z-index-1">
-                        <div class="xc-breadcrumb__list">
-                            <span><a href="/">Home</a></span>
-                            <span class="dvdr"><i class="icon-arrow-right"></i></span>
-                            <span>Shopping Cart</span>
-                        </div>
+    <div class="container pt-80 pb-80">
+        <h2>Xác nhận đơn hàng</h2>
+        @if (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+        <div class="row">
+            <div class="col-md-8">
+                <h4>Thông tin sản phẩm</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Tổng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($selectedCartItems as $index => $item)
+                            @php
+                                $product = App\Models\Product::find($item['product_id']);
+                                $price = $product ? $product->price : $item['price'];
+                                $subtotal = $price * $item['quantity'];
+                            @endphp
+                            <tr>
+                                <td>{{ $item['name'] }}</td>
+                                <td>{{ number_format($price, 0, ',', '.') }} đ</td>
+                                <td>{{ $item['quantity'] }}</td>
+                                <td>{{ number_format($subtotal, 0, ',', '.') }} đ</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Tổng tiền:</strong></td>
+                            <td><strong>{{ number_format($totalPrice, 0, ',', '.') }} đ</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <h4>Thông tin giao hàng</h4>
+                <form action="{{ route('checkout.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="selected_items" value="{{ json_encode(array_keys($selectedCartItems)) }}">
+                    <div class="mb-3">
+                        <label for="shipping_name" class="form-label">Tên người nhận</label>
+                        <input type="text" class="form-control @error('shipping_name') is-invalid @enderror" 
+                               id="shipping_name" name="shipping_name" 
+                               value="{{ old('shipping_name', $user->name) }}" required>
+                        @error('shipping_name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
-                </div>
+                    <div class="mb-3">
+                        <label for="shipping_address" class="form-label">Địa chỉ giao hàng</label>
+                        <input type="text" class="form-control @error('shipping_address') is-invalid @enderror" 
+                               id="shipping_address" name="shipping_address" 
+                               value="{{ old('shipping_address', $user->address) }}" required>
+                        @error('shipping_address')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
+                        <label for="shipping_phone" class="form-label">Số điện thoại</label>
+                        <input type="text" class="form-control @error('shipping_phone') is-invalid @enderror" 
+                               id="shipping_phone" name="shipping_phone" 
+                               value="{{ old('shipping_phone', $user->phone) }}" required>
+                        @error('shipping_phone')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Xác nhận đặt hàng</button>
+                </form>
+                <a href="{{ route('profile.edit') }}" class="btn btn-secondary w-100 mt-2">Cập nhật hồ sơ</a>
             </div>
         </div>
     </div>
-
-    <!-- checkout-area start -->
-
-    <section class="checkout-area pt-80 pb-85">
-        <div class="container">
-            <form action="#">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div class="checkbox-form">
-                            <h3 class="mb-30">Billing Details</h3>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="checkout-form-list">
-                                        <input type="text" placeholder="First Name">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="checkout-form-list">
-
-                                        <input type="text" placeholder="Last Name">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="checkout-form-list">
-
-                                        <input type="text" placeholder="Example LTD.">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="checkout-form-list">
-
-                                        <input type="text" placeholder="Street address">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="checkout-form-list">
-
-                                        <input type="text" placeholder="Town / City">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="checkout-form-list">
-                                        <input type="email" placeholder="Town / City">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="checkout-form-list">
-                                        <input type="text" placeholder="State / County">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="checkout-form-list">
-                                        <input type="text" placeholder="Postcode / Zip">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="checkout-form-list">
-                                        <input type="email" placeholder="Your Email">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="checkout-form-list">
-                                        <input type="text" placeholder="Phone number">
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="checkout-form-list">
-                                        <textarea placeholder="Message"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="shop_cart_widget xc-accordion">
-                            <div class="accordion" id="shop_size">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="size__widget">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#size_widget_collapse" aria-expanded="true"
-                                            aria-controls="size_widget_collapse">Shopping Cart
-                                        </button>
-                                    </h2>
-                                    <div id="size_widget_collapse" class="accordion-collapse collapse show"
-                                        aria-labelledby="size__widget" data-bs-parent="#shop_size" style="">
-                                        <div class="accordion-body">
-                                            <div class="cart-coupon-code">
-                                                <input type="text" placeholder="Coupon Code">
-                                                <button>Apply</button>
-                                            </div>
-                                            <div class="cart-subtitle">
-                                                <h4>Subtotal</h4>
-                                                <h4>$4589</h4>
-                                            </div>
-                                            <div class="cart-checkout">
-                                                <h4>Shipping</h4>
-                                                <div class="shop__widget-list">
-                                                    <div class="shop__widget-list-item-2">
-                                                        <input type="radio" name="pay" id="c-rate">
-                                                        <label for="c-rate">Flat rate</label>
-                                                    </div>
-                                                    <div class="shop__widget-list-item-2 has-orange">
-                                                        <input type="radio" name="pay" id="c-Free">
-                                                        <label for="c-Free">Free shipping</label>
-                                                    </div>
-                                                    <div class="shop__widget-list-item-2 has-green">
-                                                        <input type="radio" name="pay" id="c-pickup">
-                                                        <label for="c-pickup">Local pickup</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="cart-checkout">
-                                                <h4>Payment Method</h4>
-                                                <div class="shop__widget-list">
-                                                    <div class="shop__widget-list-item-2">
-                                                        <input type="radio" name="opt" id="p-rate">
-                                                        <label for="p-rate">Direct bank transfer</label>
-                                                    </div>
-                                                    <div class="shop__widget-list-item-2 has-orange">
-                                                        <input type="radio" name="opt" id="c-shipping">
-                                                        <label for="c-shipping">Cash on delivery</label>
-                                                    </div>
-                                                    <div class="shop__widget-list-item-2 has-green">
-                                                        <input type="radio" name="opt" id="p-pickup">
-                                                        <label for="p-pickup">PayPal</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="cart-totails">
-                                                <h4>total</h4>
-                                                <h4>$4589</h4>
-                                            </div>
-                                            <p>Wetters, as opposed to using Content here, content here, making it look like
-                                                readable English. Many desktop </p>
-                                            <a class="cart-checkout-btn" href="#">Place Order</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </section>
 @endsection

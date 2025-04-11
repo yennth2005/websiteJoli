@@ -16,6 +16,10 @@ class Order extends Model
         'user_id',
         'total_price',
         'status',
+        'shipping_name',
+        'shipping_address',
+        'shipping_phone',
+        'cancel_reason'
     ];
 
     /**
@@ -29,7 +33,7 @@ class Order extends Model
     /**
      * Get all of the order details for the Order.
      */
-    public function orderDetails(): HasMany
+    public function details(): HasMany
     {
         return $this->hasMany(OrderDetail::class);
     }

@@ -28,6 +28,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th><input type="checkbox" id="select-all"> Select</th>
                                     <th>Image</th>
                                     <th>Product</th>
                                     <th>Price</th>
@@ -37,15 +38,21 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php $total = 0; @endphp
                                 @forelse ($cart as $index => $item)
-                                    @php
-                                        $subtotal = $item['price'] * $item['quantity'];
-                                        $total += $subtotal;
-                                    @endphp
                                     <tr>
+                                        <td>
+                                            <input type="checkbox" class="select-item" data-index="{{ $index }}"
+                                                data-subtotal="{{ $item['price'] * $item['quantity'] }}">
+                                        </td>
+                                        <td>
+                                            @if ($item['image'])
+                                                <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['name'] }}" width="50">
+                                            @else
+                                                <span>No image</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $item['name'] }}</td>
-                                        <td>{{ number_format($item['price'], 0, ',', '.') }} $</td>
+                                        <td>{{ number_format($item['price'], 0, ',', '.') }} đ</td>
                                         <td>
                                             <div class="xc-product-quantity mt-10 mb-10">
                                                 <span class="xc-cart-minus" data-index="{{ $index }}">
@@ -58,29 +65,20 @@
                                                 </span>
                                             </div>
                                         </td>
-                                        <td class="item-subtotal">{{ number_format($subtotal, 0, ',', '.') }} $</td>
+                                        <td class="item-subtotal">{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }} đ</td>
                                         <td>
-                                            <form action="{{ route('cart.remove', $index) }}" method="POST"
-                                                class="delete-form">
+                                            <form action="{{ route('cart.remove', $index) }}" method="POST" class="delete-form">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger btn-sm">X</button>
                                             </form>
-
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center">Giỏ hàng trống</td>
+                                        <td colspan="7" class="text-center">Giỏ hàng trống</td>
                                     </tr>
                                 @endforelse
-
-                                <tr>
-                                    <td colspan="5" class="text-end"><strong>Tổng tiền:</strong></td>
-                                    <td><strong class="total-price">{{ number_format($total, 0, ',', '.') }} $</strong></td>
-                                </tr>
-
                             </tbody>
-
                         </table>
                     </div>
                 </div>
@@ -100,11 +98,14 @@
                                     aria-labelledby="size__widget" data-bs-parent="#shop_size">
                                     <div class="accordion-body">
                                         <div class="cart-subtitle d-flex justify-content-between">
-                                            <h4>Tổng tiền:</h4>
-                                            <h4 class="total-price">{{ number_format($total, 0, ',', '.') }} $</h4>
+                                            <h4>Tổng tiền đã chọn:</h4>
+                                            <h4 class="selected-total">0 đ</h4>
                                         </div>
-                                        <a class="cart-checkout-btn btn btn-success w-100 mt-3"
-                                            href="{{ route('checkout') }}">Thanh toán</a>
+                                        <form action="{{ route('checkout') }}" method="GET" id="checkout-form">
+                                            @csrf
+                                            <input type="hidden" name="selected_items" id="selected-items">
+                                            <button type="submit" class="cart-checkout-btn btn btn-success w-100 mt-3">Thanh toán</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -114,6 +115,7 @@
             </div>
         </div>
     </div>
+
     <style>
         .xc-cart-input {
             text-align: center;
@@ -124,8 +126,6 @@
             font-size: 16px;
             border: none;
             background: white;
-
-            /* Ẩn mũi tên */
             -moz-appearance: textfield;
         }
 
@@ -140,6 +140,49 @@
         document.addEventListener('DOMContentLoaded', function() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+            // Xử lý chọn tất cả
+            const selectAll = document.getElementById('select-all');
+            const selectItems = document.querySelectorAll('.select-item');
+            const selectedTotalEl = document.querySelectorAll('.selected-total');
+
+            selectAll.addEventListener('change', function() {
+                selectItems.forEach(item => {
+                    item.checked = this.checked;
+                });
+                updateSelectedTotal();
+            });
+
+            // Xử lý chọn từng sản phẩm
+            selectItems.forEach(item => {
+                item.addEventListener('change', function() {
+                    if (!this.checked) {
+                        selectAll.checked = false;
+                    } else if (document.querySelectorAll('.select-item:checked').length === selectItems.length) {
+                        selectAll.checked = true;
+                    }
+                    updateSelectedTotal();
+                });
+            });
+
+            // Cập nhật tổng tiền đã chọn
+            function updateSelectedTotal() {
+                let total = 0;
+                selectItems.forEach(item => {
+                    if (item.checked) {
+                        total += parseFloat(item.dataset.subtotal);
+                    }
+                });
+                selectedTotalEl.forEach(el => {
+                    el.innerText = numberFormat(total) + ' đ';
+                });
+            }
+
+            // Format số tiền
+            function numberFormat(number) {
+                return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            }
+
+            // Xử lý tăng/giảm số lượng
             document.getElementById('cart-container').addEventListener('click', function(e) {
                 const button = e.target.closest('.xc-cart-plus, .xc-cart-minus');
                 if (!button) return;
@@ -156,39 +199,54 @@
 
             function updateQuantity(index, quantity, inputEl) {
                 fetch(`/cart/update/${index}`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": csrfToken
-                        },
-                        body: JSON.stringify({
-                            quantity
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            const row = inputEl.closest('tr');
-                            row.querySelector('.item-subtotal').innerText = data.subtotal + ' $';
-                            document.querySelectorAll('.total-price').forEach(el => {
-                                el.innerText = data.total + ' $';
-                            });
-
-                            inputEl.setAttribute('value', quantity);
-                        } else {
-                            alert(data.message);
-                            inputEl.value = inputEl.getAttribute('value');
-                        }
-                    });
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrfToken
+                    },
+                    body: JSON.stringify({ quantity })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const row = inputEl.closest('tr');
+                        row.querySelector('.item-subtotal').innerText = numberFormat(data.subtotal) + ' đ';
+                        const checkbox = row.querySelector('.select-item');
+                        checkbox.dataset.subtotal = data.subtotal;
+                        updateSelectedTotal();
+                        inputEl.setAttribute('value', quantity);
+                    } else {
+                        alert(data.message);
+                        inputEl.value = inputEl.getAttribute('value');
+                    }
+                });
             }
-        });
-        // Xác nhận trước khi xóa sản phẩm
-        document.querySelectorAll('.delete-form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                const confirmed = confirm('Bạn có muốn xoá sản phẩm này khỏi giỏ hàng không?');
-                if (!confirmed) {
-                    e.preventDefault(); // huỷ nếu không đồng ý
-                }
+
+            // Xác nhận trước khi xóa sản phẩm
+            document.querySelectorAll('.delete-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const confirmed = confirm('Bạn có muốn xoá sản phẩm này khỏi giỏ hàng không?');
+                    if (!confirmed) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Xử lý form thanh toán
+            const checkoutForm = document.getElementById('checkout-form');
+            const selectedItemsInput = document.getElementById('selected-items');
+
+            checkoutForm.addEventListener('submit', function(e) {
+                const selectedItems = Array.from(document.querySelectorAll('.select-item:checked'))
+                    .map(item => item.dataset.index);
+                
+                if (selectedItems.length === 0) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn ít nhất một sản phẩm để thanh toán!');
+                    return;
+                } 
+
+                selectedItemsInput.value = JSON.stringify(selectedItems);
             });
         });
     </script>

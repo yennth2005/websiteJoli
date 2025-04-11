@@ -66,7 +66,7 @@
         <div class="container">
             <div class="xc-header-one__wrapper">
                 <div class="xc-header-one__logo">
-                    <a href="/"><img src="{{ asset('assets/client/img/logo/black-logo.png') }}" alt="logo"
+                    <a href="/"><img src="{{ asset('assets/client/img/logo/loho.png') }}" alt="logo"
                             width="158"></a>
                 </div>
                 <div class="xc-header-one__right">
@@ -93,11 +93,11 @@
                         <a href="/dashboard" class="xc-header-one__btn">
                             <i class="icon-user"></i>Profile
                         </a>
-                        <a href="#" class="xc-header-one__btn">
-                            <i class="icon-comment"></i>Message
+                        <a href="{{route('view-orders')}}" class="xc-header-one__btn">
+                            <i class="icon-list"></i>Orders
                         </a>
-                        <a href="#" class="xc-header-one__btn">
-                            <i class="icon-heart"></i>Wishlist
+                        <a href="{{route('admin.dashboard')}}" class="xc-header-one__btn">
+                            <i class="icon-user"></i>Admin
                         </a>
                         <a href="/cart" class="xc-header-one__btn">
                             <i class="icon-grocery-store"></i>My cart
