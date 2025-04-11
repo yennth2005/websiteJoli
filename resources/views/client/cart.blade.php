@@ -60,10 +60,12 @@
                                         </td>
                                         <td class="item-subtotal">{{ number_format($subtotal, 0, ',', '.') }} $</td>
                                         <td>
-                                            <form action="{{ route('cart.remove', $index) }}" method="POST">
+                                            <form action="{{ route('cart.remove', $index) }}" method="POST"
+                                                class="delete-form">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger btn-sm">X</button>
                                             </form>
+
                                         </td>
                                     </tr>
                                 @empty
@@ -112,6 +114,27 @@
             </div>
         </div>
     </div>
+    <style>
+        .xc-cart-input {
+            text-align: center;
+            vertical-align: middle;
+            padding: 5px 10px;
+            height: 40px;
+            width: 60px;
+            font-size: 16px;
+            border: none;
+            background: white;
+
+            /* Ẩn mũi tên */
+            -moz-appearance: textfield;
+        }
+
+        .xc-cart-input::-webkit-inner-spin-button,
+        .xc-cart-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -158,6 +181,15 @@
                         }
                     });
             }
+        });
+        // Xác nhận trước khi xóa sản phẩm
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const confirmed = confirm('Bạn có muốn xoá sản phẩm này khỏi giỏ hàng không?');
+                if (!confirmed) {
+                    e.preventDefault(); // huỷ nếu không đồng ý
+                }
+            });
         });
     </script>
 @endsection

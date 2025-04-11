@@ -118,6 +118,7 @@
                                         <input type="hidden" name="price" value="{{ $product->price }}">
                                         <input type="hidden" name="stock" value="{{ $product->stock }}">
                                         <input type="hidden" name="quantity" value="1">
+                                        <b>Chọn số lượng</b>
                                         <input type="number" id="quantity" name="quantity" class="form-control"
                                             value="1" min="1" max="{{ $product->stock }}" required
                                             oninput="validateQuantity(this)">
@@ -125,10 +126,13 @@
                                             style="display:none;"></span>
 
 
-                                        <button type="submit" class="btn btn-primary btn-lg w-100"><i
-                                                class="bi bi-cart-plus-fill me-2"></i>
-                                            Thêm vào giỏ hàng
-                                        </button>
+                                        <!-- Nút thêm vào giỏ hàng (ở lại trang hiện tại) -->
+                                        <button type="submit" name="action" value="add"
+                                            class="btn btn-primary">Thêm vào giỏ hàng</button>
+
+                                        <!-- Nút đặt hàng ngay (chuyển đến trang giỏ hàng) -->
+                                        <button type="submit" name="action" value="order" class="btn btn-success">Đặt
+                                            hàng ngay</button>
                                     </form>
                                 @else
                                     <button type="button" class="product-add-cart-btn swiftcart-btn disabled" disabled>
