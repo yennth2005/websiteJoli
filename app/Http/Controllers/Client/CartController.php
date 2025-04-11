@@ -11,6 +11,17 @@ class CartController extends Controller
     public function index()
     {
         $cart = session()->get('cart', []);
+        // Lấy giá mới nhất từ Product
+        foreach ($cart as &$item) {
+            $product = Product::find($item['product_id']);
+            if ($product) {
+                $item['price'] = $product->price; // Cập nhật giá
+                $item['stock'] = $product->stock; // Cập nhật tồn kho
+            } else {
+                unset($cart[array_search($item, $cart)]); // Xóa nếu sản phẩm không tồn tại
+            }
+        }
+        session()->put('cart', array_values($cart)); // Reset key
         return view('client.cart', compact('cart'));
     }
 
@@ -30,14 +41,32 @@ class CartController extends Controller
         }
 
         $cart = session()->get('cart', []);
-        $cart[] = [
-            'product_id' => $product->id,
-            'name' => $product->name,
-            'price' => $product->price,
-            'quantity' => $quantity,
-            'stock' => $product->stock,
-            'image' => $product->image ?? null,
-        ];
+        $productExists = false;
+
+        foreach ($cart as $index => $item) {
+            if ($item['product_id'] == $id) {
+                $newQuantity = $cart[$index]['quantity'] + $quantity;
+                if ($newQuantity > $product->stock) {
+                    return redirect()->back()->with('error', "Chỉ còn {$product->stock} sản phẩm trong kho!");
+                }
+                $cart[$index]['quantity'] = $newQuantity;
+                $cart[$index]['stock'] = $product->stock; // Cập nhật tồn kho
+                $productExists = true;
+                break;
+            }
+        }
+
+        if (!$productExists) {
+            $cart[] = [
+                'product_id' => $product->id,
+                'name' => $product->name,
+                'price' => $product->price, // Lấy giá từ Product
+                'quantity' => $quantity,
+                'stock' => $product->stock,
+                'image' => $product->image ?? null,
+            ];
+        }
+
         session()->put('cart', $cart);
 
         if ($action === 'order') {
@@ -47,13 +76,12 @@ class CartController extends Controller
         }
     }
 
-
     public function remove($index)
     {
         $cart = session()->get('cart', []);
         if (isset($cart[$index])) {
             unset($cart[$index]);
-            session()->put('cart', array_values($cart)); // Reset key để giữ chỉ mục đúng
+            session()->put('cart', array_values($cart));
         }
         return redirect()->back()->with('success', 'Đã xóa sản phẩm khỏi giỏ hàng!');
     }
@@ -67,6 +95,8 @@ class CartController extends Controller
 
         $product = Product::find($cart[$index]['product_id']);
         if (!$product) {
+            unset($cart[$index]);
+            session()->put('cart', array_values($cart));
             return response()->json(['success' => false, 'message' => 'Sản phẩm không tồn tại']);
         }
 
@@ -79,11 +109,15 @@ class CartController extends Controller
         }
 
         $cart[$index]['quantity'] = $newQuantity;
+        $cart[$index]['price'] = $product->price; // Cập nhật giá từ Product
         $cart[$index]['stock'] = $product->stock;
         session()->put('cart', $cart);
 
-        $subtotal = $cart[$index]['quantity'] * $cart[$index]['price'];
-        $total = collect($cart)->sum(fn($item) => $item['quantity'] * $item['price']);
+        $subtotal = $newQuantity * $product->price; // Tính subtotal từ giá mới
+        $total = collect($cart)->sum(function ($item) use ($cart) {
+            $product = Product::find($item['product_id']);
+            return $product ? $item['quantity'] * $product->price : 0;
+        });
 
         return response()->json([
             'success' => true,

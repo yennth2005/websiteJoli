@@ -243,7 +243,7 @@
                         <div class="col-lg-3 col-md-6">
                             <div class="xc-product-eight__item">
                                 <div class="xc-product-eight__img">
-                                    <img src="{{ asset('storage/images/' . $product->image) }}" alt="fas">
+                                    <img src="{{ asset('storage/' . $product->image ) }}" width="100%" alt="fas">
                                     <div class="xc-product-eight__icons">
                                         <button class="xc-product-eight__action">
                                             <i class="icon-love"></i>

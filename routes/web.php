@@ -43,14 +43,11 @@ Route::get('/dashboard', function () {
 
 // Nhóm route yêu cầu đăng nhập
 Route::middleware('auth')->group(function () {
-    //Trang đặt hàng
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
-    //Trang danh sách đơn hàng
-    // Route::get('/orders', [ViewOrdersController::class, 'index'])
-    //     ->name('view-orders');
-    //trang chi tiết đơn hàng
-    Route::get('/order/{id}', [ViewOrderDetailController::class, 'show'])->name('view-order-detail');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
+    Route::get('/orders', [ViewOrdersController::class, 'index'])->name('view-orders');
+    Route::get('/order/{id}', [ViewOrderDetailController::class, 'show'])->name('view-order-detail');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

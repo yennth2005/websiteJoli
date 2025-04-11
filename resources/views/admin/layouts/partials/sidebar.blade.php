@@ -3,7 +3,7 @@
     <div>
         <div class="logo-wrapper logo-wrapper-center">
             <a href="{{ Route('admin.dashboard') }}" data-bs-original-title="" title="">
-                <img class="img-fluid for-white" src="{{ asset('assets/admin/images/logo/full-white.png') }}"
+                <img class="img-fluid for-white" src="{{ asset('assets/admin/images/logo/loho.png') }}"
                     alt="logo">
             </a>
             <div class="back-btn">
