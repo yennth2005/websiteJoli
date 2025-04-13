@@ -27,16 +27,16 @@
                             @endphp
                             <tr>
                                 <td>{{ $item['name'] }}</td>
-                                <td>{{ number_format($price, 0, ',', '.') }} đ</td>
+                                <td>{{ number_format($price, 0, ',', '.') }} $</td>
                                 <td>{{ $item['quantity'] }}</td>
-                                <td>{{ number_format($subtotal, 0, ',', '.') }} đ</td>
+                                <td>{{ number_format($subtotal, 0, ',', '.') }} $</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
                             <td colspan="3" class="text-end"><strong>Tổng tiền:</strong></td>
-                            <td><strong>{{ number_format($totalPrice, 0, ',', '.') }} đ</strong></td>
+                            <td><strong>{{ number_format($totalPrice, 0, ',', '.') }} d</strong></td>
                         </tr>
                     </tfoot>
                 </table>
