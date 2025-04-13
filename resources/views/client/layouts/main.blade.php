@@ -50,7 +50,8 @@
     <!-- template styles -->
     <link rel="stylesheet" href="{{ asset('assets/client/css/swiftcart.css') }}" />
 
-
+<!-- Toastify CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
 </head>
 
@@ -96,10 +97,11 @@
     <script src="{{ asset('assets/client/vendors/glightbox/js/glightbox.min.js') }}"></script>
     <script src="../unpkg.com/splitting%401.1.0/dist/splitting.min.js') }}"></script>
     <script src="../unpkg.com/scroll-out%402.2.12/dist/scroll-out.min.js') }}"></script>
-
+<!-- Toastify JS -->
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <!-- template js -->
     <script src="{{ asset('assets/client/js/swiftcart.js') }}"></script>
-
+    @stack('scripts')
 
 </body>
 

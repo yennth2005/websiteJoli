@@ -84,7 +84,7 @@
                             <div class="product__details-thumb-content w-img">
                                 <div class="tab-content">
                                     <div class="tab-pane fade show active">
-                                        <img src="{{ asset('storage/images/' . $product->image) }}" alt="">
+                                        <img src="{{ asset('storage/' . $product->image) }}" alt="">
                                     </div>
                                 </div>
                             </div>

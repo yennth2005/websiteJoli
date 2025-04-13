@@ -3,6 +3,10 @@
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Thêm CDN cho Toastify.js -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
     <div class="xc-breadcrumb__area base-bg">
         <div class="xc-breadcrumb__bg w-img xc-breadcrumb__overlay"></div>
         <div class="container">
@@ -28,7 +32,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" id="select-all"> Select</th>
+                                    <th><input type="checkbox" id="select-all" checked></th>
                                     <th>Image</th>
                                     <th>Product</th>
                                     <th>Price</th>
@@ -38,37 +42,38 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php $total = 0; @endphp
                                 @forelse ($cart as $index => $item)
+                                    @php
+                                        $subtotal = $item['price'] * $item['quantity'];
+                                        $total += $subtotal;
+                                    @endphp
                                     <tr>
+                                        <td><input type="checkbox" class="cart-item-checkbox" data-index="{{ $index }}" checked></td>
                                         <td>
-                                            <input type="checkbox" class="select-item" data-index="{{ $index }}"
-                                                data-subtotal="{{ $item['price'] * $item['quantity'] }}">
-                                        </td>
-                                        <td>
-                                            @if ($item['image'])
-                                                <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['name'] }}" width="50">
-                                            @else
-                                                <span>No image</span>
-                                            @endif
+                                            <img src="{{ $item['image'] ? asset('storage/' . $item['image']) : 'https://via.placeholder.com/100' }}"
+                                                alt="{{ $item['name'] }}" width="50">
                                         </td>
                                         <td>{{ $item['name'] }}</td>
-                                        <td>{{ number_format($item['price'], 0, ',', '.') }} đ</td>
+                                        <td>{{ number_format($item['price'], 0, ',', '.') }} $</td>
                                         <td>
                                             <div class="xc-product-quantity mt-10 mb-10">
                                                 <span class="xc-cart-minus" data-index="{{ $index }}">
                                                     <i class="fas fa-minus"></i>
                                                 </span>
                                                 <input class="xc-cart-input" type="number" value="{{ $item['quantity'] }}"
-                                                    min="1" data-index="{{ $index }}">
+                                                    min="1" max="{{ $item['stock'] }}" data-index="{{ $index }}" readonly>
                                                 <span class="xc-cart-plus" data-index="{{ $index }}">
                                                     <i class="fas fa-plus"></i>
                                                 </span>
+                                                <small class="text-muted">(Còn {{ $item['stock'] }} sản phẩm)</small>
                                             </div>
                                         </td>
-                                        <td class="item-subtotal">{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }} đ</td>
+                                        <td class="item-subtotal">{{ number_format($subtotal, 0, ',', '.') }} $</td>
                                         <td>
                                             <form action="{{ route('cart.remove', $index) }}" method="POST" class="delete-form">
                                                 @csrf
+                                                @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">X</button>
                                             </form>
                                         </td>
@@ -78,6 +83,10 @@
                                         <td colspan="7" class="text-center">Giỏ hàng trống</td>
                                     </tr>
                                 @endforelse
+                                <tr>
+                                    <td colspan="6" class="text-end"><strong>Tổng tiền:</strong></td>
+                                    <td><strong class="total-price">{{ number_format($total, 0, ',', '.') }} $</strong></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -98,14 +107,12 @@
                                     aria-labelledby="size__widget" data-bs-parent="#shop_size">
                                     <div class="accordion-body">
                                         <div class="cart-subtitle d-flex justify-content-between">
-                                            <h4>Tổng tiền đã chọn:</h4>
-                                            <h4 class="selected-total">0 đ</h4>
+                                            <h4>Tổng tiền:</h4>
+                                            <h4 class="total-price">{{ number_format($total, 0, ',', '.') }} $</h4>
                                         </div>
-                                        <form action="{{ route('checkout') }}" method="GET" id="checkout-form">
-                                            @csrf
-                                            <input type="hidden" name="selected_items" id="selected-items">
-                                            <button type="submit" class="cart-checkout-btn btn btn-success w-100 mt-3">Thanh toán</button>
-                                        </form>
+                                        <button type="button" class="cart-checkout-btn btn btn-success w-100 mt-3" onclick="proceedToCheckout()">
+                                            Thanh toán
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -128,126 +135,177 @@
             background: white;
             -moz-appearance: textfield;
         }
-
         .xc-cart-input::-webkit-inner-spin-button,
         .xc-cart-input::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
+        .xc-cart-plus.disabled,
+        .xc-cart-minus.disabled {
+            pointer-events: none;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .xc-cart-plus,
+        .xc-cart-minus {
+            cursor: pointer;
+            padding: 5px 10px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+        }
+        .xc-cart-input.updated {
+            animation: blink 0.3s;
+        }
+        @keyframes blink {
+            0% { background-color: #fff; }
+            50% { background-color: #e0e0e0; }
+            100% { background-color: #fff; }
+        }
+        .text-muted {
+            font-size: 12px;
+            margin-left: 5px;
+        }
     </style>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            // Xử lý chọn tất cả
+            // Hàm hiển thị toast
+            function showToast(message, type = 'success') {
+                Toastify({
+                    text: message,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: type === 'success' ? "#28a745" : "#dc3545",
+                    stopOnFocus: true,
+                }).showToast();
+            }
+
+            // Select all checkboxes
             const selectAll = document.getElementById('select-all');
-            const selectItems = document.querySelectorAll('.select-item');
-            const selectedTotalEl = document.querySelectorAll('.selected-total');
+            const checkboxes = document.querySelectorAll('.cart-item-checkbox');
 
-            selectAll.addEventListener('change', function() {
-                selectItems.forEach(item => {
-                    item.checked = this.checked;
+            selectAll.addEventListener('change', function () {
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
                 });
-                updateSelectedTotal();
+                updateTotal();
             });
 
-            // Xử lý chọn từng sản phẩm
-            selectItems.forEach(item => {
-                item.addEventListener('change', function() {
-                    if (!this.checked) {
-                        selectAll.checked = false;
-                    } else if (document.querySelectorAll('.select-item:checked').length === selectItems.length) {
-                        selectAll.checked = true;
-                    }
-                    updateSelectedTotal();
-                });
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateTotal);
             });
 
-            // Cập nhật tổng tiền đã chọn
-            function updateSelectedTotal() {
-                let total = 0;
-                selectItems.forEach(item => {
-                    if (item.checked) {
-                        total += parseFloat(item.dataset.subtotal);
-                    }
-                });
-                selectedTotalEl.forEach(el => {
-                    el.innerText = numberFormat(total) + ' đ';
-                });
-            }
-
-            // Format số tiền
-            function numberFormat(number) {
-                return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-            }
-
-            // Xử lý tăng/giảm số lượng
-            document.getElementById('cart-container').addEventListener('click', function(e) {
+            // Update quantity
+            document.getElementById('cart-container').addEventListener('click', function (e) {
                 const button = e.target.closest('.xc-cart-plus, .xc-cart-minus');
-                if (!button) return;
+                if (!button || button.classList.contains('disabled')) return;
 
                 const index = button.dataset.index;
                 const input = document.querySelector(`input[data-index="${index}"]`);
-                let quantity = parseInt(input.value);
-                quantity = button.classList.contains('xc-cart-plus') ? quantity + 1 : quantity - 1;
-                if (quantity < 1) quantity = 1;
+                let quantity = parseInt(input.value) || 1;
+
+                if (button.classList.contains('xc-cart-plus')) {
+                    quantity += 1;
+                } else if (quantity > 1) {
+                    quantity -= 1;
+                } else {
+                    return;
+                }
 
                 input.value = quantity;
-                updateQuantity(index, quantity, input);
+                updateQuantity(index, quantity, input, button);
             });
 
-            function updateQuantity(index, quantity, inputEl) {
+            function updateQuantity(index, quantity, inputEl, button) {
+                const originalValue = parseInt(inputEl.getAttribute('value')) || 1;
+                const plusButton = document.querySelector(`.xc-cart-plus[data-index="${index}"]`);
+                const minusButton = document.querySelector(`.xc-cart-minus[data-index="${index}"]`);
+
+                plusButton.classList.add('disabled');
+                minusButton.classList.add('disabled');
+
                 fetch(`/cart/update/${index}`, {
-                    method: "POST",
+                    method: 'POST',
                     headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": csrfToken
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
                     },
                     body: JSON.stringify({ quantity })
                 })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        const row = inputEl.closest('tr');
-                        row.querySelector('.item-subtotal').innerText = numberFormat(data.subtotal) + ' đ';
-                        const checkbox = row.querySelector('.select-item');
-                        checkbox.dataset.subtotal = data.subtotal;
-                        updateSelectedTotal();
-                        inputEl.setAttribute('value', quantity);
-                    } else {
-                        alert(data.message);
-                        inputEl.value = inputEl.getAttribute('value');
-                    }
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            inputEl.setAttribute('value', quantity);
+                            inputEl.value = quantity;
+                            inputEl.classList.add('updated');
+                            const row = inputEl.closest('tr');
+                            row.querySelector('.item-subtotal').textContent = new Intl.NumberFormat('vi-VN').format(data.subtotal) + ' $';
+                            updateTotal();
+                            showToast('Cập nhật số lượng thành công!', 'success');
+                        } else {
+                            inputEl.value = originalValue;
+                            inputEl.setAttribute('value', originalValue);
+                            showToast(data.message || 'Không thể cập nhật số lượng.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        inputEl.value = originalValue;
+                        inputEl.setAttribute('value', originalValue);
+                        showToast('Đã xảy ra lỗi khi cập nhật số lượng.', 'error');
+                    })
+                    .finally(() => {
+                        plusButton.classList.remove('disabled');
+                        minusButton.classList.remove('disabled');
+                    });
+            }
+
+            function updateTotal() {
+                let total = 0;
+                document.querySelectorAll('.cart-item-checkbox:checked').forEach(checkbox => {
+                    const row = checkbox.closest('tr');
+                    const subtotalText = row.querySelector('.item-subtotal').textContent;
+                    const subtotal = parseFloat(subtotalText.replace(/[^0-9]/g, '')) || 0;
+                    total += subtotal;
+                });
+                document.querySelectorAll('.total-price').forEach(el => {
+                    el.textContent = new Intl.NumberFormat('vi-VN').format(total) + ' $';
                 });
             }
 
-            // Xác nhận trước khi xóa sản phẩm
+            window.proceedToCheckout = function () {
+                const selectedItems = Array.from(document.querySelectorAll('.cart-item-checkbox:checked'))
+                    .map(checkbox => checkbox.dataset.index);
+
+                if (selectedItems.length === 0) {
+                    showToast('Vui lòng chọn ít nhất một sản phẩm để thanh toán!', 'error');
+                    return;
+                }
+
+                const url = '{{ route("checkout") }}' + '?selected_items=' + encodeURIComponent(JSON.stringify(selectedItems));
+                window.location.href = url;
+            };
+
+            // Confirm delete
             document.querySelectorAll('.delete-form').forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    const confirmed = confirm('Bạn có muốn xoá sản phẩm này khỏi giỏ hàng không?');
-                    if (!confirmed) {
+                form.addEventListener('submit', function (e) {
+                    if (!confirm('Bạn có muốn xóa sản phẩm này khỏi giỏ hàng không?')) {
                         e.preventDefault();
                     }
                 });
             });
 
-            // Xử lý form thanh toán
-            const checkoutForm = document.getElementById('checkout-form');
-            const selectedItemsInput = document.getElementById('selected-items');
-
-            checkoutForm.addEventListener('submit', function(e) {
-                const selectedItems = Array.from(document.querySelectorAll('.select-item:checked'))
-                    .map(item => item.dataset.index);
-                
-                if (selectedItems.length === 0) {
-                    e.preventDefault();
-                    alert('Vui lòng chọn ít nhất một sản phẩm để thanh toán!');
-                    return;
-                } 
-
-                selectedItemsInput.value = JSON.stringify(selectedItems);
-            });
+            // Hiển thị thông báo từ session nếu có
+            @if (session('success'))
+                showToast('{{ session('success') }}', 'success');
+            @endif
+            @if (session('error'))
+                showToast('{{ session('error') }}', 'error');
+            @endif
         });
     </script>
 @endsection

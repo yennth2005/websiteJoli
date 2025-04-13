@@ -94,7 +94,7 @@ class ProductController extends Controller
             'category_id' => 'sometimes|required|exists:categories,id',
             'name' => 'sometimes|required|string|max:255',
             'color_id' => 'nullable|integer|exists:colors,id', // Validation cho color_id
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|file',
             'description' => 'nullable|string',
             'price' => 'sometimes|required|numeric|min:0',
             'sale_price' => [
